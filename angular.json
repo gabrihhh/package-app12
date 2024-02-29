@@ -105,6 +105,37 @@
           }
         }
       }
+    },
+    "ngx-timepicker12": {
+      "projectType": "library",
+      "root": "projects/ngx-timepicker12",
+      "sourceRoot": "projects/ngx-timepicker12/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-timepicker12/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-timepicker12/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-timepicker12/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-timepicker12/src/test.ts",
+            "tsConfig": "projects/ngx-timepicker12/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-timepicker12/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "package-app12"
