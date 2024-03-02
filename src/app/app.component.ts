@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public valor = '12:00:00'
+
+  teste(){
+    console.log(this.valor)
+  }
 }

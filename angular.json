@@ -138,5 +138,8 @@
       }
     }
   },
-  "defaultProject": "package-app12"
+  "defaultProject": "package-app12",
+  "cli": {
+    "analytics": false
+  }
 }

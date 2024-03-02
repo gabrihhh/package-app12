@@ -1,6 +1,6 @@
 <h1 align="center">TimePicker Angular</h1>
 <h3>Descrição</h3>
-<p align="justify">Propósito do repositório é criar um input do tipo horario que retorne uma parcela de tempo em um tipo específico.</p>
+<p align="justify">Propósito do repositório é criar um input do tipo horario que retorne uma parcela de tempo em um tipo específico para o angular 12.</p>
 <h3>Métodos</h3>
 
   -  `[(response)]:` Espera uma variavel do tipo number|null e retorna ela modificada.

@@ -8,7 +8,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
     <div>:</div>
     <div id="minute" tabindex="1" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
-    <div *ngIf="needSeconds" id="second" tabindex="1" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
+    <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
   </div>
 `,
   styles: [
@@ -222,6 +222,10 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       }
       this.updateValue()
     })
+  }
+
+  public lostFocus(){
+    this.selected = null
   }
 
   public focus($event:any){
