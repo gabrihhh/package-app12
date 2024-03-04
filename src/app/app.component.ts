@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public valor = '12:00:00'
+  public valor = '08:00:00'
 
   teste(){
     console.log(this.valor)
