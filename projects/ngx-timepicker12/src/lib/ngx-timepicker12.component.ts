@@ -92,7 +92,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
 
   ngAfterViewInit(): void {
     document.addEventListener('keydown',(e)=>{
-      e.preventDefault();
       if(e.code == 'Tab'){
         switch(this.selected){
           case 'hour':
@@ -107,6 +106,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         }
       }
       if(e.code == 'ArrowUp'){
+        e.preventDefault();
         switch(this.selected){
           case 'hour':
             this.hour++
@@ -120,6 +120,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         }
       }
       if(e.code == 'ArrowDown'){
+        e.preventDefault();
         switch(this.selected){
           case 'hour':
             if(this.hour==0){
@@ -145,6 +146,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         }
       }
       if(e.code == 'ArrowRight'){
+        e.preventDefault();
         switch(this.selected){
           case 'hour':
             this.selected = 'minute';
@@ -155,6 +157,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         }
       }
       if(e.code == 'ArrowLeft'){
+        e.preventDefault();
         switch(this.selected){
           case 'second':
             this.selected = 'minute';
