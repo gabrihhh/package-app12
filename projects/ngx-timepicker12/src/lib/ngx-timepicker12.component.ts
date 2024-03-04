@@ -4,9 +4,9 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
   selector: 'ngx-timepicker',
   template: `
   <div [style.width]="widthCss" [style.height]="heightCss" class="timepicker">
-    <div id="hour" tabindex="1" (focus)="focus($event)" [style.background-color]="selected==='hour'? cor : 'transparent'" (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>
+    <div id="hour" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='hour'? cor : 'transparent'" (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>
     <div>:</div>
-    <div id="minute" tabindex="1" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
+    <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
   </div>
@@ -92,6 +92,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
 
   ngAfterViewInit(): void {
     document.addEventListener('keydown',(e)=>{
+      e.preventDefault();
       if(e.code == 'Tab'){
         switch(this.selected){
           case 'hour':
