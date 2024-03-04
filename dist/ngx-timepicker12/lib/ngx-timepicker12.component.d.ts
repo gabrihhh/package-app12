@@ -1,0 +1,36 @@
+import { AfterViewInit, EventEmitter, OnInit } from '@angular/core';
+import * as i0 from "@angular/core";
+export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
+    width: number;
+    height: number;
+    font: number;
+    max: string;
+    response: number | null;
+    responseString: string | null;
+    needSeconds: boolean;
+    type: 'milisecond' | 'second' | 'minute' | 'hour' | 'time';
+    cor: string;
+    responseChange: EventEmitter<any>;
+    responseStringChange: EventEmitter<any>;
+    widthCss: string;
+    heightCss: string;
+    fontCss: string;
+    hour: number;
+    minute: number;
+    second: number;
+    selected: 'hour' | 'minute' | 'second' | null;
+    maxHour: number;
+    maxMinute: number;
+    maxSecond: number;
+    private newInput;
+    private tabIndex;
+    ngOnInit(): void;
+    ngAfterViewInit(): void;
+    lostFocus(): void;
+    focus($event: any): void;
+    apagar(local: 'hour' | 'minute' | 'second' | null): void;
+    digitar(num: number, local: 'hour' | 'minute' | 'second' | null): void;
+    updateValue(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<NgxTimepicker12Component, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
+}
