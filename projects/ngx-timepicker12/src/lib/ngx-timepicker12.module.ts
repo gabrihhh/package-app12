@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { NgxTimepicker12Component } from './ngx-timepicker12.component';
 import { CommonModule } from '@angular/common';
-
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
     NgxTimepicker12Component
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatDialogModule
   ],
   exports: [
     NgxTimepicker12Component

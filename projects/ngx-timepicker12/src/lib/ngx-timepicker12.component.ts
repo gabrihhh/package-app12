@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
+import { MatDialog } from '@angular/material/dialog'
+import { ClockDialogComponent } from './clock-dialog/clock-dialog.component';
 @Component({
   selector: 'ngx-timepicker',
   template: `
@@ -9,6 +10,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
+    <button (click)="clockDialog()"></button>
   </div>
 `,
   styles: [
@@ -57,6 +59,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   public maxSecond:number = 0
   private newInput:boolean = true;
   private tabIndex:boolean = false;
+  constructor(private dialog:MatDialog){}
   ngOnInit(): void {
     if(this.max != ''){
       const arrayMax = this.max.split(':');
@@ -356,5 +359,8 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         this.responseChange.emit(respostaSeparada);
         break
     }
+  }
+  public clockDialog(){
+    const dialogRef = this.dialog.open(ClockDialogComponent)
   }
 }
