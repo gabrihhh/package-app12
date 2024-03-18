@@ -9,8 +9,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button mat-button style="padding:0 10px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
-      <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <button mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+      <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
         <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
@@ -49,7 +49,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
     .btnClock{
       margin:0 5px;
       height:30px;
-      width:30px;
       min-width:25px;
       display:flex;
       justify-content:center;
@@ -58,6 +57,13 @@ import { MatMenuTrigger } from '@angular/material/menu';
 
     #hour,#minute,#second{
       cursor:pointer
+    }
+    .btnClock{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:25px;
+      height:25px;
     }
     .matMenuClock{
       width:150px;
@@ -77,10 +83,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
       flex-direction:column;
       align-items:center;
       overflow:scroll;
-    }
-    .number{
-      padding:10px 0;
-      cursor:pointer;
     }
     .footerClock{
       width:150px;
@@ -104,7 +106,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 })
 export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   @ViewChild('trigger') menuTrigger!: MatMenuTrigger;
-  @Input() width:number = 150;
+  @Input() width:number = 130;
   @Input() height:number = 40;
   @Input() font:number = 10;
   @Input() max:string = '23:59:59';
@@ -169,9 +171,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    if(this.hourClock && this.minuteClock && this.secondClock){
-      this.disableClock = false
-    }
     document.addEventListener('keydown',(e)=>{
       if(e.code == 'Tab'){
         switch(this.selected){
@@ -360,7 +359,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
 
   public digitar(num:number,local:'hour'|'minute'|'second'|null){
     if(local){
-      console.log(num,local,this.newInput,this.selected)
       if(local=='hour'){
         if(this.newInput){
           this.hour=parseInt('0'+num)
@@ -451,51 +449,74 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   public fecharMenu(trigger:MatMenuTrigger) {
     this.disableClock = true
     trigger.closeMenu();
+    this.updateValue();
   }
   public preencherDivs() {
-    const criarDivs = (parentElementId:string, id:number,limite:number) => {
+    this.hourClock = null;
+    this.minuteClock = null;
+    this.secondClock = null;
+    this.destroyDivs('hourClock')
+    this.destroyDivs('minuteClock')
+    this.destroyDivs('secondClock')
+    const criarDivs = (parentElementId: string, id: number, limite: number) => {
+
       const parentElement = document.getElementById(parentElementId);
 
       for (let i = 0; i <= limite; i++) {
         const numberDiv = document.createElement('div');
         numberDiv.textContent = i < 10 ? `0${i}` : `${i}`;
-        switch(id){
+        numberDiv.style.borderBottom = "1px solid black";
+        numberDiv.style.padding = "5px 10px";
+        numberDiv.style.cursor = "pointer";
+        numberDiv.style.margin = "2px";
+
+        let classIdentifier = '';
+        switch(id) {
           case 0:
-            numberDiv.classList.add('numHourClock')
-            break
+            classIdentifier = 'numHourClock';
+            break;
           case 1:
-            numberDiv.classList.add('numMinuteClock')
-            break
+            classIdentifier = 'numMinuteClock';
+            break;
           case 2:
-            numberDiv.classList.add('numSecondClock')
-            break
+            classIdentifier = 'numSecondClock';
+            break;
         }
+        numberDiv.classList.add(classIdentifier);
+
         numberDiv.addEventListener('click', () => {
-          switch(numberDiv.className){
-            case 'numHourClock':
-              this.hourClock = numberDiv.textContent
-              console.log(this.hourClock)
-              break
-            case 'numMinuteClock':
-              this.minuteClock = numberDiv.textContent
-              console.log(this.minuteClock)
-              break
-            case 'numSecondClock':
-              this.secondClock = numberDiv.textContent
-              console.log(this.secondClock)
-              break
-          }
+          const allSiblings = parentElement!.querySelectorAll(`.${classIdentifier}`);
+          allSiblings.forEach(sibling => {
+            if (sibling instanceof HTMLElement) {
+              sibling.style.backgroundColor = "";
+            }
+          });
+
+          if(classIdentifier === 'numHourClock') this.hourClock = numberDiv.textContent;
+          if(classIdentifier === 'numMinuteClock') this.minuteClock = numberDiv.textContent;
+          if(classIdentifier === 'numSecondClock') this.secondClock = numberDiv.textContent;
+
+          numberDiv.style.backgroundColor = "lightblue";
+
           if(this.hourClock && this.minuteClock && this.secondClock){
-            this.disableClock = false
+            this.disableClock = false;
           }
         });
 
         parentElement!.appendChild(numberDiv);
       }
     };
-    criarDivs('hourClock',0,23);
-    criarDivs('minuteClock',1,59);
-    criarDivs('secondClock',2,59);
+
+    criarDivs('hourClock', 0, 23);
+    criarDivs('minuteClock', 1, 59);
+    criarDivs('secondClock', 2, 59);
+  }
+
+  public destroyDivs(id:string){
+    const element = document.getElementById(id);
+    if(element){
+      element.innerHTML = ''
+    }
   }
   public confirmClock(){
     this.hour = parseInt(this.hourClock!)
