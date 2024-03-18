@@ -1,19 +1,21 @@
 import { NgModule } from '@angular/core';
 import { NgxTimepicker12Component } from './ngx-timepicker12.component';
 import { CommonModule } from '@angular/common';
-import {MatDialogModule} from '@angular/material/dialog';
-
-
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Necessário para animações
 @NgModule({
   declarations: [
-    NgxTimepicker12Component
+    NgxTimepicker12Component,
   ],
   imports: [
     CommonModule,
-    MatDialogModule
+    MatButtonModule,
+    MatMenuModule,
+    BrowserAnimationsModule,
   ],
   exports: [
-    NgxTimepicker12Component
+    NgxTimepicker12Component,
   ]
 })
 export class NgxTimepicker12Module { }

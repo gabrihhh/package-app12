@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog'
-import { ClockDialogComponent } from './clock-dialog/clock-dialog.component';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
   selector: 'ngx-timepicker',
   template: `
@@ -10,7 +9,24 @@ import { ClockDialogComponent } from './clock-dialog/clock-dialog.component';
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button (click)="clockDialog()"></button>
+    <button mat-button style="padding:0 10px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+      <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <mat-menu #aboveMenu="matMenu" yPosition="above">
+    <div class="matMenuClock" (click)="$event.stopPropagation();">
+      <div class="numbers">
+        <div id="hourClock"></div>
+        <div id="minuteClock"></div>
+        <div id="secondClock"></div>
+      </div>
+      <div class="footerClock">
+        <button mat-raised-button (click)="nowClock()">Now</button>
+        <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
+      </div>
+    </div>
+    </mat-menu>
   </div>
 `,
   styles: [
@@ -26,17 +42,70 @@ import { ClockDialogComponent } from './clock-dialog/clock-dialog.component';
       -moz-user-select: none; /* Firefox */
       -ms-user-select: none; /* IE10+/Edge */
       user-select: none;
-      cursor:pointer;
     }
     div:focus{
       outline:none;
-    }`
+    }
+    .btnClock{
+      margin:0 5px;
+      height:30px;
+      width:30px;
+      min-width:25px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    #hour,#minute,#second{
+      cursor:pointer
+    }
+    .matMenuClock{
+      width:150px;
+      height:150px;
+      display:flex;
+      flex-direction:column;
+    }
+    .numbers{
+      width:150px;
+      height:120px;
+      display:flex;
+    }
+    .numbers>div{
+      width:50px;
+      height:120px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      overflow:scroll;
+    }
+    .number{
+      padding:10px 0;
+      cursor:pointer;
+    }
+    .footerClock{
+      width:150px;
+      height:30px;
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      button{
+        min-width:50px;
+        min-height:20px;
+        width:50px;
+        height:20px;
+        font-size:15px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+      }
+    }
+    `
   ]
 })
 export class NgxTimepicker12Component implements OnInit,AfterViewInit{
-
-  @Input() width:number = 100;
-  @Input() height:number = 30;
+  @ViewChild('trigger') menuTrigger!: MatMenuTrigger;
+  @Input() width:number = 150;
+  @Input() height:number = 40;
   @Input() font:number = 10;
   @Input() max:string = '23:59:59';
   @Input() response: number|null = null;
@@ -57,9 +126,14 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   public maxHour:number = 0
   public maxMinute:number = 0
   public maxSecond:number = 0
+  public disableClock:boolean = true;
+  public hourClock:string|null = null;
+  public minuteClock:string|null = null;
+  public secondClock:string|null = null;
   private newInput:boolean = true;
   private tabIndex:boolean = false;
-  constructor(private dialog:MatDialog){}
+  constructor(){
+  }
   ngOnInit(): void {
     if(this.max != ''){
       const arrayMax = this.max.split(':');
@@ -95,6 +169,9 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   }
 
   ngAfterViewInit(): void {
+    if(this.hourClock && this.minuteClock && this.secondClock){
+      this.disableClock = false
+    }
     document.addEventListener('keydown',(e)=>{
       if(e.code == 'Tab'){
         switch(this.selected){
@@ -360,7 +437,70 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         break
     }
   }
-  public clockDialog(){
-    const dialogRef = this.dialog.open(ClockDialogComponent)
+  public nowClock(){
+    const agora = new Date();
+    const horas = agora.getHours();
+    const minutos = agora.getMinutes();
+    const segundos = agora.getSeconds();
+
+    this.hour = horas;
+    this.minute = minutos;
+    this.second = segundos;
+    this.fecharMenu(this.menuTrigger);
+  }
+  public fecharMenu(trigger:MatMenuTrigger) {
+    this.disableClock = true
+    trigger.closeMenu();
+  }
+  public preencherDivs() {
+    const criarDivs = (parentElementId:string, id:number,limite:number) => {
+      const parentElement = document.getElementById(parentElementId);
+
+      for (let i = 0; i <= limite; i++) {
+        const numberDiv = document.createElement('div');
+        numberDiv.textContent = i < 10 ? `0${i}` : `${i}`;
+        switch(id){
+          case 0:
+            numberDiv.classList.add('numHourClock')
+            break
+          case 1:
+            numberDiv.classList.add('numMinuteClock')
+            break
+          case 2:
+            numberDiv.classList.add('numSecondClock')
+            break
+        }
+        numberDiv.addEventListener('click', () => {
+          switch(numberDiv.className){
+            case 'numHourClock':
+              this.hourClock = numberDiv.textContent
+              console.log(this.hourClock)
+              break
+            case 'numMinuteClock':
+              this.minuteClock = numberDiv.textContent
+              console.log(this.minuteClock)
+              break
+            case 'numSecondClock':
+              this.secondClock = numberDiv.textContent
+              console.log(this.secondClock)
+              break
+          }
+          if(this.hourClock && this.minuteClock && this.secondClock){
+            this.disableClock = false
+          }
+        });
+
+        parentElement!.appendChild(numberDiv);
+      }
+    };
+    criarDivs('hourClock',0,23);
+    criarDivs('minuteClock',1,59);
+    criarDivs('secondClock',2,59);
+  }
+  public confirmClock(){
+    this.hour = parseInt(this.hourClock!)
+    this.minute = parseInt(this.minuteClock!)
+    this.second = parseInt(this.secondClock!)
+    this.fecharMenu(this.menuTrigger);
   }
 }
