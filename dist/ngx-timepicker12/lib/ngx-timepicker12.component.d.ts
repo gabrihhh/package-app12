@@ -1,6 +1,8 @@
 import { AfterViewInit, EventEmitter, OnInit } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import * as i0 from "@angular/core";
 export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
+    menuTrigger: MatMenuTrigger;
     width: number;
     height: number;
     font: number;
@@ -22,15 +24,26 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     maxHour: number;
     maxMinute: number;
     maxSecond: number;
+    disableClock: boolean;
+    hourClock: string | null;
+    minuteClock: string | null;
+    secondClock: string | null;
     private newInput;
     private tabIndex;
+    constructor();
     ngOnInit(): void;
     ngAfterViewInit(): void;
     lostFocus(): void;
     focus($event: any): void;
     apagar(local: 'hour' | 'minute' | 'second' | null): void;
     digitar(num: number, local: 'hour' | 'minute' | 'second' | null): void;
+    error(): import("rxjs").Observable<never>;
     updateValue(): void;
+    nowClock(): void;
+    fecharMenu(trigger: MatMenuTrigger): void;
+    preencherDivs(): void;
+    destroyDivs(id: string): void;
+    confirmClock(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<NgxTimepicker12Component, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
 }

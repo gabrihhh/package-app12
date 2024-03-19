@@ -3,7 +3,6 @@ import { NgxTimepicker12Component } from './ngx-timepicker12.component';
 import { CommonModule } from '@angular/common';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Necessário para animações
 @NgModule({
   declarations: [
     NgxTimepicker12Component,
@@ -12,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
     CommonModule,
     MatButtonModule,
     MatMenuModule,
-    BrowserAnimationsModule,
   ],
   exports: [
     NgxTimepicker12Component,

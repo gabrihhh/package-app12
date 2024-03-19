@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@gabrihhh/ngx-timepicker12', ['exports', '@angular/core', '@angular/common'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.gabrihhh = global.gabrihhh || {}, global.gabrihhh["ngx-timepicker12"] = {}), global.ng.core, global.ng.common));
-})(this, (function (exports, i0, i1) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('@angular/material/button'), require('@angular/material/menu'), require('@angular/common')) :
+    typeof define === 'function' && define.amd ? define('@gabrihhh/ngx-timepicker12', ['exports', '@angular/core', 'rxjs', '@angular/material/button', '@angular/material/menu', '@angular/common'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.gabrihhh = global.gabrihhh || {}, global.gabrihhh["ngx-timepicker12"] = {}), global.ng.core, global.rxjs, global.ng.material.button, global.ng.material.menu, global.ng.common));
+})(this, (function (exports, i0, rxjs, i1, i2, i3) { 'use strict';
 
     function _interopNamespace(e) {
         if (e && e.__esModule) return e;
@@ -24,6 +24,8 @@
 
     var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
     var i1__namespace = /*#__PURE__*/_interopNamespace(i1);
+    var i2__namespace = /*#__PURE__*/_interopNamespace(i2);
+    var i3__namespace = /*#__PURE__*/_interopNamespace(i3);
 
     var NgxTimepicker12Service = /** @class */ (function () {
         function NgxTimepicker12Service() {
@@ -41,8 +43,8 @@
 
     var NgxTimepicker12Component = /** @class */ (function () {
         function NgxTimepicker12Component() {
-            this.width = 100;
-            this.height = 30;
+            this.width = 130;
+            this.height = 40;
             this.font = 10;
             this.max = '23:59:59';
             this.response = null;
@@ -62,6 +64,10 @@
             this.maxHour = 0;
             this.maxMinute = 0;
             this.maxSecond = 0;
+            this.disableClock = true;
+            this.hourClock = null;
+            this.minuteClock = null;
+            this.secondClock = null;
             this.newInput = true;
             this.tabIndex = false;
         }
@@ -241,19 +247,15 @@
             this.selected = null;
         };
         NgxTimepicker12Component.prototype.focus = function ($event) {
-            var _a, _b, _c;
             switch ($event.target.id) {
                 case 'hour':
                     this.selected = 'hour';
-                    (_a = document.getElementById('hour')) === null || _a === void 0 ? void 0 : _a.focus();
                     break;
                 case 'minute':
                     this.selected = 'minute';
-                    (_b = document.getElementById('minute')) === null || _b === void 0 ? void 0 : _b.focus();
                     break;
                 case 'second':
                     this.selected = 'second';
-                    (_c = document.getElementById('second')) === null || _c === void 0 ? void 0 : _c.focus();
                     break;
             }
         };
@@ -293,7 +295,6 @@
         };
         NgxTimepicker12Component.prototype.digitar = function (num, local) {
             if (local) {
-                console.log(num, local, this.newInput, this.selected);
                 if (local == 'hour') {
                     if (this.newInput) {
                         this.hour = parseInt('0' + num);
@@ -329,15 +330,21 @@
                 }
             }
         };
+        NgxTimepicker12Component.prototype.error = function () {
+            return rxjs.throwError(function () { return new Error('The time is bigger then max time:Was set the max time'); });
+        };
         NgxTimepicker12Component.prototype.updateValue = function () {
             if (this.hour > this.maxHour) {
                 this.hour = this.maxHour;
+                this.error();
             }
             if (this.hour == this.maxHour && this.minute > this.maxMinute) {
                 this.minute = this.maxMinute;
+                this.error();
             }
             if (this.hour == this.maxHour && this.minute == this.maxMinute && this.second > this.maxSecond) {
                 this.second = this.maxSecond;
+                this.error();
             }
             switch (this.type) {
                 case 'second':
@@ -372,20 +379,108 @@
                     break;
             }
         };
+        NgxTimepicker12Component.prototype.nowClock = function () {
+            var agora = new Date();
+            var horas = agora.getHours();
+            var minutos = agora.getMinutes();
+            var segundos = agora.getSeconds();
+            this.hour = horas;
+            this.minute = minutos;
+            this.second = segundos;
+            this.fecharMenu(this.menuTrigger);
+        };
+        NgxTimepicker12Component.prototype.fecharMenu = function (trigger) {
+            this.disableClock = true;
+            trigger.closeMenu();
+            this.updateValue();
+        };
+        NgxTimepicker12Component.prototype.preencherDivs = function () {
+            var _this = this;
+            this.hourClock = null;
+            this.minuteClock = null;
+            this.secondClock = null;
+            this.destroyDivs('hourClock');
+            this.destroyDivs('minuteClock');
+            this.destroyDivs('secondClock');
+            var criarDivs = function (parentElementId, id, limite) {
+                var parentElement = document.getElementById(parentElementId);
+                var _loop_1 = function (i) {
+                    var numberDiv = document.createElement('div');
+                    numberDiv.textContent = i < 10 ? "0" + i : "" + i;
+                    numberDiv.style.borderBottom = "1px solid black";
+                    numberDiv.style.padding = "5px 10px";
+                    numberDiv.style.cursor = "pointer";
+                    numberDiv.style.margin = "2px";
+                    var classIdentifier = '';
+                    switch (id) {
+                        case 0:
+                            classIdentifier = 'numHourClock';
+                            break;
+                        case 1:
+                            classIdentifier = 'numMinuteClock';
+                            break;
+                        case 2:
+                            classIdentifier = 'numSecondClock';
+                            break;
+                    }
+                    numberDiv.classList.add(classIdentifier);
+                    numberDiv.addEventListener('click', function () {
+                        var allSiblings = parentElement.querySelectorAll("." + classIdentifier);
+                        allSiblings.forEach(function (sibling) {
+                            if (sibling instanceof HTMLElement) {
+                                sibling.style.backgroundColor = "";
+                            }
+                        });
+                        if (classIdentifier === 'numHourClock')
+                            _this.hourClock = numberDiv.textContent;
+                        if (classIdentifier === 'numMinuteClock')
+                            _this.minuteClock = numberDiv.textContent;
+                        if (classIdentifier === 'numSecondClock')
+                            _this.secondClock = numberDiv.textContent;
+                        numberDiv.style.backgroundColor = "lightblue";
+                        if (_this.hourClock && _this.minuteClock && _this.secondClock) {
+                            _this.disableClock = false;
+                        }
+                    });
+                    parentElement.appendChild(numberDiv);
+                };
+                for (var i = 0; i <= limite; i++) {
+                    _loop_1(i);
+                }
+            };
+            criarDivs('hourClock', 0, this.maxHour);
+            criarDivs('minuteClock', 1, 59);
+            criarDivs('secondClock', 2, 59);
+        };
+        NgxTimepicker12Component.prototype.destroyDivs = function (id) {
+            var element = document.getElementById(id);
+            if (element) {
+                element.innerHTML = '';
+            }
+        };
+        NgxTimepicker12Component.prototype.confirmClock = function () {
+            this.hour = parseInt(this.hourClock);
+            this.minute = parseInt(this.minuteClock);
+            this.second = parseInt(this.secondClock);
+            this.fecharMenu(this.menuTrigger);
+        };
         return NgxTimepicker12Component;
     }());
     NgxTimepicker12Component.ɵfac = i0__namespace.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Component, deps: [], target: i0__namespace.ɵɵFactoryTarget.Component });
-    NgxTimepicker12Component.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, ngImport: i0__namespace, template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n  </div>\n", isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n      cursor:pointer;\n    }\n    div:focus{\n      outline:none;\n    }"], directives: [{ type: i1__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }] });
+    NgxTimepicker12Component.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], ngImport: i0__namespace, template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n    <button mat-button style=\"padding:10px;position:relative;bottom:1px\" [matMenuTriggerFor]=\"aboveMenu\" #trigger=\"matMenuTrigger\" class=\"btnClock\" (click)=\"preencherDivs()\">\n      <svg width=\"20px\" height=\"20px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 17px;\">\n        <path d=\"M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n      </svg>\n    </button>\n    <mat-menu #aboveMenu=\"matMenu\" yPosition=\"above\">\n    <div class=\"matMenuClock\" (click)=\"$event.stopPropagation();\">\n      <div class=\"numbers\">\n        <div id=\"hourClock\"></div>\n        <div id=\"minuteClock\"></div>\n        <div id=\"secondClock\"></div>\n      </div>\n      <div class=\"footerClock\">\n        <button mat-raised-button (click)=\"nowClock()\">Now</button>\n        <button mat-raised-button [disabled]=\"disableClock\" (click)=\"confirmClock()\">Ok</button>\n      </div>\n    </div>\n    </mat-menu>\n  </div>\n", isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n\n    #hour,#minute,#second{\n      cursor:pointer\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "], components: [{ type: i1__namespace.MatButton, selector: "button[mat-button], button[mat-raised-button], button[mat-icon-button],             button[mat-fab], button[mat-mini-fab], button[mat-stroked-button],             button[mat-flat-button]", inputs: ["disabled", "disableRipple", "color"], exportAs: ["matButton"] }, { type: i2__namespace.MatMenu, selector: "mat-menu", exportAs: ["matMenu"] }], directives: [{ type: i3__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i2__namespace.MatMenuTrigger, selector: "[mat-menu-trigger-for], [matMenuTriggerFor]", exportAs: ["matMenuTrigger"] }] });
     i0__namespace.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Component, decorators: [{
                 type: i0.Component,
                 args: [{
                         selector: 'ngx-timepicker',
-                        template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n  </div>\n",
+                        template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n    <button mat-button style=\"padding:10px;position:relative;bottom:1px\" [matMenuTriggerFor]=\"aboveMenu\" #trigger=\"matMenuTrigger\" class=\"btnClock\" (click)=\"preencherDivs()\">\n      <svg width=\"20px\" height=\"20px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 17px;\">\n        <path d=\"M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n      </svg>\n    </button>\n    <mat-menu #aboveMenu=\"matMenu\" yPosition=\"above\">\n    <div class=\"matMenuClock\" (click)=\"$event.stopPropagation();\">\n      <div class=\"numbers\">\n        <div id=\"hourClock\"></div>\n        <div id=\"minuteClock\"></div>\n        <div id=\"secondClock\"></div>\n      </div>\n      <div class=\"footerClock\">\n        <button mat-raised-button (click)=\"nowClock()\">Now</button>\n        <button mat-raised-button [disabled]=\"disableClock\" (click)=\"confirmClock()\">Ok</button>\n      </div>\n    </div>\n    </mat-menu>\n  </div>\n",
                         styles: [
-                            ".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n      cursor:pointer;\n    }\n    div:focus{\n      outline:none;\n    }"
+                            ".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n\n    #hour,#minute,#second{\n      cursor:pointer\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "
                         ]
                     }]
-            }], propDecorators: { width: [{
+            }], ctorParameters: function () { return []; }, propDecorators: { menuTrigger: [{
+                    type: i0.ViewChild,
+                    args: ['trigger']
+                }], width: [{
                     type: i0.Input
                 }], height: [{
                     type: i0.Input
@@ -415,21 +510,27 @@
         return NgxTimepicker12Module;
     }());
     NgxTimepicker12Module.ɵfac = i0__namespace.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Module, deps: [], target: i0__namespace.ɵɵFactoryTarget.NgModule });
-    NgxTimepicker12Module.ɵmod = i0__namespace.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Module, declarations: [NgxTimepicker12Component], imports: [i1.CommonModule], exports: [NgxTimepicker12Component] });
+    NgxTimepicker12Module.ɵmod = i0__namespace.ɵɵngDeclareNgModule({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Module, declarations: [NgxTimepicker12Component], imports: [i3.CommonModule,
+            i1.MatButtonModule,
+            i2.MatMenuModule], exports: [NgxTimepicker12Component] });
     NgxTimepicker12Module.ɵinj = i0__namespace.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Module, imports: [[
-                i1.CommonModule
+                i3.CommonModule,
+                i1.MatButtonModule,
+                i2.MatMenuModule,
             ]] });
     i0__namespace.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Module, decorators: [{
                 type: i0.NgModule,
                 args: [{
                         declarations: [
-                            NgxTimepicker12Component
+                            NgxTimepicker12Component,
                         ],
                         imports: [
-                            i1.CommonModule
+                            i3.CommonModule,
+                            i1.MatButtonModule,
+                            i2.MatMenuModule,
                         ],
                         exports: [
-                            NgxTimepicker12Component
+                            NgxTimepicker12Component,
                         ]
                     }]
             }] });

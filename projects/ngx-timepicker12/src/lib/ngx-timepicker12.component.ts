@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { throwError } from 'rxjs';
 @Component({
   selector: 'ngx-timepicker',
   template: `
@@ -391,16 +392,21 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       }
     }
   }
-
+  public error(){
+    return throwError(()=> new Error('The time is bigger then max time:Was set the max time'))
+  }
   public updateValue(): void {
     if(this.hour>this.maxHour){
       this.hour = this.maxHour;
+      this.error()
     }
     if(this.hour==this.maxHour && this.minute>this.maxMinute){
       this.minute=this.maxMinute
+      this.error()
     }
     if(this.hour==this.maxHour && this.minute==this.maxMinute && this.second>this.maxSecond){
       this.second=this.maxSecond
+      this.error()
     }
     switch(this.type){
       case 'second':
@@ -507,7 +513,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       }
     };
 
-    criarDivs('hourClock', 0, 23);
+    criarDivs('hourClock', 0, this.maxHour);
     criarDivs('minuteClock', 1, 59);
     criarDivs('secondClock', 2, 59);
   }
