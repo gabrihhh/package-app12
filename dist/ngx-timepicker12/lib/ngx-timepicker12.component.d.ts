@@ -12,6 +12,7 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     needSeconds: boolean;
     type: 'milisecond' | 'second' | 'minute' | 'hour' | 'time';
     cor: string;
+    disabled: boolean;
     responseChange: EventEmitter<any>;
     responseStringChange: EventEmitter<any>;
     widthCss: string;
@@ -29,7 +30,6 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     minuteClock: string | null;
     secondClock: string | null;
     private newInput;
-    private tabIndex;
     constructor();
     ngOnInit(): void;
     ngAfterViewInit(): void;
@@ -45,5 +45,5 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     destroyDivs(id: string): void;
     confirmClock(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<NgxTimepicker12Component, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; "disabled": "disabled"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
 }

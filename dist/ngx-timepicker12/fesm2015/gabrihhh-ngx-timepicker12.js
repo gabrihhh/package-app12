@@ -31,6 +31,7 @@ class NgxTimepicker12Component {
         this.needSeconds = true;
         this.type = 'second';
         this.cor = "#48b9c7";
+        this.disabled = false;
         this.responseChange = new EventEmitter();
         this.responseStringChange = new EventEmitter();
         this.widthCss = `${this.width}px`;
@@ -48,7 +49,6 @@ class NgxTimepicker12Component {
         this.minuteClock = null;
         this.secondClock = null;
         this.newInput = true;
-        this.tabIndex = false;
     }
     ngOnInit() {
         if (this.max != '') {
@@ -85,156 +85,173 @@ class NgxTimepicker12Component {
         }
     }
     ngAfterViewInit() {
-        document.addEventListener('keydown', (e) => {
-            if (e.code == 'Tab') {
-                switch (this.selected) {
-                    case 'hour':
-                        this.selected = 'minute';
+        if (!this.disabled) {
+            const hour = document.getElementById('hour');
+            if (hour) {
+                hour.style.cursor = "pointer";
+            }
+            ;
+            const minute = document.getElementById('minute');
+            if (minute) {
+                minute.style.cursor = "pointer";
+            }
+            const second = document.getElementById('second');
+            if (second) {
+                second.style.cursor = "pointer";
+            }
+            document.addEventListener('keydown', (e) => {
+                if (e.code == 'Tab') {
+                    switch (this.selected) {
+                        case 'hour':
+                            this.selected = 'minute';
+                            break;
+                        case 'minute':
+                            this.selected = 'second';
+                            break;
+                        case 'second':
+                            this.selected = null;
+                            break;
+                    }
+                }
+                if (e.code == 'ArrowUp') {
+                    e.preventDefault();
+                    switch (this.selected) {
+                        case 'hour':
+                            this.hour++;
+                            break;
+                        case 'minute':
+                            this.minute++;
+                            break;
+                        case 'second':
+                            this.second++;
+                            break;
+                    }
+                }
+                if (e.code == 'ArrowDown') {
+                    e.preventDefault();
+                    switch (this.selected) {
+                        case 'hour':
+                            if (this.hour == 0) {
+                                this.hour = this.maxHour;
+                            }
+                            else {
+                                this.hour--;
+                            }
+                            break;
+                        case 'minute':
+                            if (this.minute == 0) {
+                                this.minute = 59;
+                            }
+                            else {
+                                this.minute--;
+                            }
+                            break;
+                        case 'second':
+                            if (this.second == 0) {
+                                this.second = 59;
+                            }
+                            else {
+                                this.second--;
+                            }
+                            break;
+                    }
+                }
+                if (e.code == 'ArrowRight') {
+                    e.preventDefault();
+                    switch (this.selected) {
+                        case 'hour':
+                            this.selected = 'minute';
+                            break;
+                        case 'minute':
+                            this.selected = 'second';
+                            break;
+                    }
+                }
+                if (e.code == 'ArrowLeft') {
+                    e.preventDefault();
+                    switch (this.selected) {
+                        case 'second':
+                            this.selected = 'minute';
+                            break;
+                        case 'minute':
+                            this.selected = 'hour';
+                            break;
+                    }
+                }
+                if (e.code == 'Backspace') {
+                    switch (this.selected) {
+                        case 'hour':
+                            this.apagar('hour');
+                            break;
+                        case 'minute':
+                            this.apagar('minute');
+                            break;
+                        case 'second':
+                            this.apagar('second');
+                            break;
+                    }
+                }
+                switch (e.key) {
+                    case '1':
+                        this.digitar(1, this.selected);
                         break;
-                    case 'minute':
-                        this.selected = 'second';
+                    case '2':
+                        this.digitar(2, this.selected);
                         break;
-                    case 'second':
-                        this.selected = null;
+                    case '3':
+                        this.digitar(3, this.selected);
+                        break;
+                    case '4':
+                        this.digitar(4, this.selected);
+                        break;
+                    case '5':
+                        this.digitar(5, this.selected);
+                        break;
+                    case '6':
+                        this.digitar(6, this.selected);
+                        break;
+                    case '7':
+                        this.digitar(7, this.selected);
+                        break;
+                    case '8':
+                        this.digitar(8, this.selected);
+                        break;
+                    case '9':
+                        this.digitar(9, this.selected);
+                        break;
+                    case '0':
+                        this.digitar(0, this.selected);
                         break;
                 }
-            }
-            if (e.code == 'ArrowUp') {
-                e.preventDefault();
-                switch (this.selected) {
-                    case 'hour':
-                        this.hour++;
-                        break;
-                    case 'minute':
-                        this.minute++;
-                        break;
-                    case 'second':
-                        this.second++;
-                        break;
+                if (this.minute > 59 || this.minute < 0) {
+                    this.minute = 0;
                 }
-            }
-            if (e.code == 'ArrowDown') {
-                e.preventDefault();
-                switch (this.selected) {
-                    case 'hour':
-                        if (this.hour == 0) {
-                            this.hour = this.maxHour;
-                        }
-                        else {
-                            this.hour--;
-                        }
-                        break;
-                    case 'minute':
-                        if (this.minute == 0) {
-                            this.minute = 59;
-                        }
-                        else {
-                            this.minute--;
-                        }
-                        break;
-                    case 'second':
-                        if (this.second == 0) {
-                            this.second = 59;
-                        }
-                        else {
-                            this.second--;
-                        }
-                        break;
+                if (this.second > 59 || this.second < 0) {
+                    this.second = 0;
                 }
-            }
-            if (e.code == 'ArrowRight') {
-                e.preventDefault();
-                switch (this.selected) {
-                    case 'hour':
-                        this.selected = 'minute';
-                        break;
-                    case 'minute':
-                        this.selected = 'second';
-                        break;
+                if (this.hour.toString().length > 3 || this.hour < 0) {
+                    this.hour = 0;
                 }
-            }
-            if (e.code == 'ArrowLeft') {
-                e.preventDefault();
-                switch (this.selected) {
-                    case 'second':
-                        this.selected = 'minute';
-                        break;
-                    case 'minute':
-                        this.selected = 'hour';
-                        break;
-                }
-            }
-            if (e.code == 'Backspace') {
-                switch (this.selected) {
-                    case 'hour':
-                        this.apagar('hour');
-                        break;
-                    case 'minute':
-                        this.apagar('minute');
-                        break;
-                    case 'second':
-                        this.apagar('second');
-                        break;
-                }
-            }
-            switch (e.key) {
-                case '1':
-                    this.digitar(1, this.selected);
-                    break;
-                case '2':
-                    this.digitar(2, this.selected);
-                    break;
-                case '3':
-                    this.digitar(3, this.selected);
-                    break;
-                case '4':
-                    this.digitar(4, this.selected);
-                    break;
-                case '5':
-                    this.digitar(5, this.selected);
-                    break;
-                case '6':
-                    this.digitar(6, this.selected);
-                    break;
-                case '7':
-                    this.digitar(7, this.selected);
-                    break;
-                case '8':
-                    this.digitar(8, this.selected);
-                    break;
-                case '9':
-                    this.digitar(9, this.selected);
-                    break;
-                case '0':
-                    this.digitar(0, this.selected);
-                    break;
-            }
-            if (this.minute > 59 || this.minute < 0) {
-                this.minute = 0;
-            }
-            if (this.second > 59 || this.second < 0) {
-                this.second = 0;
-            }
-            if (this.hour.toString().length > 3 || this.hour < 0) {
-                this.hour = 0;
-            }
-            this.updateValue();
-        });
+                this.updateValue();
+            });
+        }
     }
     lostFocus() {
         this.selected = null;
     }
     focus($event) {
-        switch ($event.target.id) {
-            case 'hour':
-                this.selected = 'hour';
-                break;
-            case 'minute':
-                this.selected = 'minute';
-                break;
-            case 'second':
-                this.selected = 'second';
-                break;
+        if (!this.disabled) {
+            switch ($event.target.id) {
+                case 'hour':
+                    this.selected = 'hour';
+                    break;
+                case 'minute':
+                    this.selected = 'minute';
+                    break;
+                case 'second':
+                    this.selected = 'second';
+                    break;
+            }
         }
     }
     apagar(local) {
@@ -373,6 +390,7 @@ class NgxTimepicker12Component {
         this.updateValue();
     }
     preencherDivs() {
+        this.disableClock = true;
         this.hourClock = null;
         this.minuteClock = null;
         this.secondClock = null;
@@ -440,14 +458,14 @@ class NgxTimepicker12Component {
     }
 }
 NgxTimepicker12Component.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Component, deps: [], target: i0.ɵɵFactoryTarget.Component });
-NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], ngImport: i0, template: `
+NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor", disabled: "disabled" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], ngImport: i0, template: `
   <div [style.width]="widthCss" [style.height]="heightCss" class="timepicker">
     <div id="hour" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='hour'? cor : 'transparent'" (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>
     <div>:</div>
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+    <button *ngIf="!disabled" mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
       <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
         <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -466,7 +484,7 @@ NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0
     </div>
     </mat-menu>
   </div>
-`, isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n\n    #hour,#minute,#second{\n      cursor:pointer\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "], components: [{ type: i1.MatButton, selector: "button[mat-button], button[mat-raised-button], button[mat-icon-button],             button[mat-fab], button[mat-mini-fab], button[mat-stroked-button],             button[mat-flat-button]", inputs: ["disabled", "disableRipple", "color"], exportAs: ["matButton"] }, { type: i2.MatMenu, selector: "mat-menu", exportAs: ["matMenu"] }], directives: [{ type: i3.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i2.MatMenuTrigger, selector: "[mat-menu-trigger-for], [matMenuTriggerFor]", exportAs: ["matMenuTrigger"] }] });
+`, isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n      scrollbar-width: none;\n    }\n    .numbers>div::-webkit-scrollbar{\n      display:none;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "], components: [{ type: i1.MatButton, selector: "button[mat-button], button[mat-raised-button], button[mat-icon-button],             button[mat-fab], button[mat-mini-fab], button[mat-stroked-button],             button[mat-flat-button]", inputs: ["disabled", "disableRipple", "color"], exportAs: ["matButton"] }, { type: i2.MatMenu, selector: "mat-menu", exportAs: ["matMenu"] }], directives: [{ type: i3.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i2.MatMenuTrigger, selector: "[mat-menu-trigger-for], [matMenuTriggerFor]", exportAs: ["matMenuTrigger"] }] });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Component, decorators: [{
             type: Component,
             args: [{
@@ -478,7 +496,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+    <button *ngIf="!disabled" mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
       <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
         <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -523,10 +541,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
       justify-content:center;
       align-items:center;
     }
-
-    #hour,#minute,#second{
-      cursor:pointer
-    }
     .btnClock{
       display:flex;
       justify-content:center;
@@ -552,6 +566,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
       flex-direction:column;
       align-items:center;
       overflow:scroll;
+      scrollbar-width: none;
+    }
+    .numbers>div::-webkit-scrollbar{
+      display:none;
     }
     .footerClock{
       width:150px;
@@ -593,6 +611,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
             }], type: [{
                 type: Input
             }], cor: [{
+                type: Input
+            }], disabled: [{
                 type: Input
             }], responseChange: [{
                 type: Output

@@ -5,6 +5,7 @@
 
   -  `[(response)]:` Espera uma variavel do tipo number|null e retorna ela modificada.
   -  `[(responseString)]:`Espera uma variavel do tipo string|null e retorna ela modificada.
+  -  `[disabled]:`Espera uma variavel do tipo boolean que desabilita o input caso for true.
   -  `[max]:`recebe o valor de horário maximo para se escolher baseando-se na string "hh:mm:ss"
   -  `[type]:`recebe o tipo de valor que vai ser retornado sendo ele:
       -  `'milisecond':`retorna o valor em milisegundos.

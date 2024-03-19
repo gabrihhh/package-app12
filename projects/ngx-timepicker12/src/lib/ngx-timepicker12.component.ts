@@ -23,7 +23,7 @@ import { throwError } from 'rxjs';
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
-        <button mat-raised-button (click)="nowClock()">Now</button>
+        <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>
     </div>
