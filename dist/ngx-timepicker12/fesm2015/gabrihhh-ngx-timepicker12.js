@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, EventEmitter, Component, ViewChild, Input, Output, NgModule } from '@angular/core';
+import { EventEmitter, Component, ViewChild, Input, Output, NgModule } from '@angular/core';
 import { throwError } from 'rxjs';
 import * as i1 from '@angular/material/button';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,18 +7,6 @@ import * as i2 from '@angular/material/menu';
 import { MatMenuModule } from '@angular/material/menu';
 import * as i3 from '@angular/common';
 import { CommonModule } from '@angular/common';
-
-class NgxTimepicker12Service {
-    constructor() { }
-}
-NgxTimepicker12Service.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Service, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-NgxTimepicker12Service.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Service, providedIn: 'root' });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Service, decorators: [{
-            type: Injectable,
-            args: [{
-                    providedIn: 'root'
-                }]
-        }], ctorParameters: function () { return []; } });
 
 class NgxTimepicker12Component {
     constructor() {
@@ -478,7 +466,7 @@ NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
-        <button mat-raised-button (click)="nowClock()">Now</button>
+        <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>
     </div>
@@ -509,7 +497,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
-        <button mat-raised-button (click)="nowClock()">Now</button>
+        <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>
     </div>
@@ -656,5 +644,5 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
  * Generated bundle index. Do not edit.
  */
 
-export { NgxTimepicker12Component, NgxTimepicker12Module, NgxTimepicker12Service };
+export { NgxTimepicker12Component, NgxTimepicker12Module };
 //# sourceMappingURL=gabrihhh-ngx-timepicker12.js.map

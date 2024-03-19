@@ -23,6 +23,7 @@ import { throwError } from 'rxjs';
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
+        <button mat-raised-button *ngIf="max !== '23:59:59'" (click)="maxClock()">Max</button>
         <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>
@@ -309,8 +310,11 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         if(this.second>59 || this.second<0){
           this.second = 0
         }
-        if(this.hour.toString().length>3 || this.hour<0){
+        if(this.hour<0){
           this.hour = 0
+        }
+        if(this.hour>this.maxHour){
+          this.hour = this.maxHour
         }
         this.updateValue()
       })
@@ -336,6 +340,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       }
     }
   }
+
   public apagar(local: 'hour'|'minute'|'second'|null) {
     if(local){
       if(local=='hour'){
@@ -373,11 +378,13 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       if(local=='hour'){
         if(this.newInput){
           this.hour=parseInt('0'+num)
-          this.newInput = false
+          this.newInput = false;
         }else{
           this.hour=parseInt(this.hour.toString()+num)
-          this.selected = 'minute';
-          this.newInput=true
+          if(this.hour.toString().length == this.maxHour.toString().length){
+            this.selected = 'minute';
+            this.newInput=true
+          }
         }
       }
       if(local=='minute'){
@@ -402,9 +409,11 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       }
     }
   }
+
   public error(){
     return throwError(()=> new Error('The time is bigger then max time:Was set the max time'))
   }
+
   public updateValue(): void {
     if(this.hour>this.maxHour){
       this.hour = this.maxHour;
@@ -451,6 +460,14 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
         break
     }
   }
+
+  public maxClock(){
+    this.hour = this.maxHour;
+    this.minute = this.maxMinute;
+    this.second = this.maxSecond;
+    this.fecharMenu(this.menuTrigger);
+  }
+
   public nowClock(){
     const agora = new Date();
     const horas = agora.getHours();
@@ -462,11 +479,13 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
     this.second = segundos;
     this.fecharMenu(this.menuTrigger);
   }
+
   public fecharMenu(trigger:MatMenuTrigger) {
     this.disableClock = true
     trigger.closeMenu();
     this.updateValue();
   }
+
   public preencherDivs() {
     this.disableClock = true;
     this.hourClock = null;
@@ -535,6 +554,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       element.innerHTML = ''
     }
   }
+
   public confirmClock(){
     this.hour = parseInt(this.hourClock!)
     this.minute = parseInt(this.minuteClock!)

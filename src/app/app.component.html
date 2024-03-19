@@ -1,5 +1,7 @@
-<div>
-  <ngx-timepicker type="time" max="06:00:00" [(responseString)]="valor"></ngx-timepicker>
-  <button (click)="teste()">teste</button>
+<div class="page">
+  <ngx-timepicker type="time" max="23:00:00" [(responseString)]="valor"></ngx-timepicker>
 
+  <button (click)="teste()">Resultado</button>
+
+  <div><p id="resposta"></p></div>
 </div>
