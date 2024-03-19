@@ -10,7 +10,7 @@ import { throwError } from 'rxjs';
     <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
     <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+    <button *ngIf="!disabled" mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
       <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
         <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -54,10 +54,6 @@ import { throwError } from 'rxjs';
       display:flex;
       justify-content:center;
       align-items:center;
-    }
-
-    #hour,#minute,#second{
-      cursor:pointer
     }
     .btnClock{
       display:flex;
@@ -116,6 +112,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   @Input() needSeconds: boolean = true;
   @Input() type: 'milisecond'|'second'|'minute'| 'hour' | 'time' = 'second'
   @Input() cor:string = "#48b9c7";
+  @Input() disabled:boolean = false;
 
   @Output() responseChange = new EventEmitter<any>();
   @Output() responseStringChange = new EventEmitter<any>();
@@ -134,7 +131,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   public minuteClock:string|null = null;
   public secondClock:string|null = null;
   private newInput:boolean = true;
-  private tabIndex:boolean = false;
   constructor(){
   }
   ngOnInit(): void {
@@ -172,141 +168,149 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    document.addEventListener('keydown',(e)=>{
-      if(e.code == 'Tab'){
-        switch(this.selected){
-          case 'hour':
-            this.selected = 'minute'
-            break
-          case 'minute':
-            this.selected = 'second'
-            break
-          case 'second':
-            this.selected = null
-            break
+    if(!this.disabled){
+      const hour = document.getElementById('hour');
+      if(hour){hour.style.cursor = "pointer"};
+      const minute = document.getElementById('minute');
+      if(minute){minute.style.cursor = "pointer"}
+      const second = document.getElementById('second');
+      if(second){second.style.cursor = "pointer"}
+      document.addEventListener('keydown',(e)=>{
+        if(e.code == 'Tab'){
+          switch(this.selected){
+            case 'hour':
+              this.selected = 'minute'
+              break
+            case 'minute':
+              this.selected = 'second'
+              break
+            case 'second':
+              this.selected = null
+              break
+          }
         }
-      }
-      if(e.code == 'ArrowUp'){
-        e.preventDefault();
-        switch(this.selected){
-          case 'hour':
-            this.hour++
-            break
-          case 'minute':
-            this.minute++
-            break
-          case 'second':
-            this.second++
-            break
+        if(e.code == 'ArrowUp'){
+          e.preventDefault();
+          switch(this.selected){
+            case 'hour':
+              this.hour++
+              break
+            case 'minute':
+              this.minute++
+              break
+            case 'second':
+              this.second++
+              break
+          }
         }
-      }
-      if(e.code == 'ArrowDown'){
-        e.preventDefault();
-        switch(this.selected){
-          case 'hour':
-            if(this.hour==0){
-              this.hour=this.maxHour
-            }else{
-              this.hour--
-            }
-            break
-          case 'minute':
-            if(this.minute==0){
-              this.minute=59
-            }else{
-              this.minute--
-            }
-            break
-          case 'second':
-            if(this.second==0){
-              this.second=59
-            }else{
-              this.second--
-            }
-            break
+        if(e.code == 'ArrowDown'){
+          e.preventDefault();
+          switch(this.selected){
+            case 'hour':
+              if(this.hour==0){
+                this.hour=this.maxHour
+              }else{
+                this.hour--
+              }
+              break
+            case 'minute':
+              if(this.minute==0){
+                this.minute=59
+              }else{
+                this.minute--
+              }
+              break
+            case 'second':
+              if(this.second==0){
+                this.second=59
+              }else{
+                this.second--
+              }
+              break
+          }
         }
-      }
-      if(e.code == 'ArrowRight'){
-        e.preventDefault();
-        switch(this.selected){
-          case 'hour':
-            this.selected = 'minute';
-            break
-          case 'minute':
-            this.selected = 'second';
-            break
+        if(e.code == 'ArrowRight'){
+          e.preventDefault();
+          switch(this.selected){
+            case 'hour':
+              this.selected = 'minute';
+              break
+            case 'minute':
+              this.selected = 'second';
+              break
+          }
         }
-      }
-      if(e.code == 'ArrowLeft'){
-        e.preventDefault();
-        switch(this.selected){
-          case 'second':
-            this.selected = 'minute';
-            break
-          case 'minute':
-            this.selected = 'hour';
-            break
+        if(e.code == 'ArrowLeft'){
+          e.preventDefault();
+          switch(this.selected){
+            case 'second':
+              this.selected = 'minute';
+              break
+            case 'minute':
+              this.selected = 'hour';
+              break
+          }
         }
-      }
-      if(e.code =='Backspace'){
-        switch(this.selected){
-          case 'hour':
-            this.apagar('hour')
-            break
-          case 'minute':
-            this.apagar('minute')
-            break
-          case 'second':
-            this.apagar('second')
-            break
+        if(e.code =='Backspace'){
+          switch(this.selected){
+            case 'hour':
+              this.apagar('hour')
+              break
+            case 'minute':
+              this.apagar('minute')
+              break
+            case 'second':
+              this.apagar('second')
+              break
+          }
         }
-      }
 
 
-      switch(e.key){
-        case '1':
-          this.digitar(1,this.selected);
-          break
-        case '2':
-          this.digitar(2,this.selected);
-          break
-        case '3':
-          this.digitar(3,this.selected);
-          break
-        case '4':
-          this.digitar(4,this.selected);
-          break
-        case '5':
-          this.digitar(5,this.selected);
-          break
-        case '6':
-          this.digitar(6,this.selected);
-          break
-        case '7':
-          this.digitar(7,this.selected);
-          break
-        case '8':
-          this.digitar(8,this.selected);
-          break
-        case '9':
-          this.digitar(9,this.selected);
-          break
-        case '0':
-          this.digitar(0,this.selected);
-          break
-      }
+        switch(e.key){
+          case '1':
+            this.digitar(1,this.selected);
+            break
+          case '2':
+            this.digitar(2,this.selected);
+            break
+          case '3':
+            this.digitar(3,this.selected);
+            break
+          case '4':
+            this.digitar(4,this.selected);
+            break
+          case '5':
+            this.digitar(5,this.selected);
+            break
+          case '6':
+            this.digitar(6,this.selected);
+            break
+          case '7':
+            this.digitar(7,this.selected);
+            break
+          case '8':
+            this.digitar(8,this.selected);
+            break
+          case '9':
+            this.digitar(9,this.selected);
+            break
+          case '0':
+            this.digitar(0,this.selected);
+            break
+        }
 
-      if(this.minute>59 || this.minute<0){
-        this.minute = 0
-      }
-      if(this.second>59 || this.second<0){
-        this.second = 0
-      }
-      if(this.hour.toString().length>3 || this.hour<0){
-        this.hour = 0
-      }
-      this.updateValue()
-    })
+        if(this.minute>59 || this.minute<0){
+          this.minute = 0
+        }
+        if(this.second>59 || this.second<0){
+          this.second = 0
+        }
+        if(this.hour.toString().length>3 || this.hour<0){
+          this.hour = 0
+        }
+        this.updateValue()
+      })
+    }
   }
 
   public lostFocus(){
@@ -314,16 +318,18 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   }
 
   public focus($event:any){
-    switch($event.target.id){
-      case 'hour':
-        this.selected = 'hour';
-        break
-      case 'minute':
-        this.selected = 'minute';
-        break
-      case 'second':
-        this.selected = 'second';
-        break
+    if(!this.disabled){
+      switch($event.target.id){
+        case 'hour':
+          this.selected = 'hour';
+          break
+        case 'minute':
+          this.selected = 'minute';
+          break
+        case 'second':
+          this.selected = 'second';
+          break
+      }
     }
   }
   public apagar(local: 'hour'|'minute'|'second'|null) {
@@ -458,6 +464,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
     this.updateValue();
   }
   public preencherDivs() {
+    this.disableClock = true;
     this.hourClock = null;
     this.minuteClock = null;
     this.secondClock = null;
