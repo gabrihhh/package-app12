@@ -80,6 +80,10 @@ import { throwError } from 'rxjs';
       flex-direction:column;
       align-items:center;
       overflow:scroll;
+      scrollbar-width: none;
+    }
+    .numbers>div::-webkit-scrollbar{
+      display:none;
     }
     .footerClock{
       width:150px;
