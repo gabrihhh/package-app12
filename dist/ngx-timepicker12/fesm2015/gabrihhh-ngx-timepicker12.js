@@ -56,6 +56,11 @@ class NgxTimepicker12Component {
                 this.hour = parseInt(array[0]);
                 this.minute = parseInt(array[1]);
             }
+            if (isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)) {
+                this.hour = 0;
+                this.minute = 0;
+                this.second = 0;
+            }
         }
         if (this.response) {
             let time = this.response;
@@ -217,8 +222,11 @@ class NgxTimepicker12Component {
                 if (this.second > 59 || this.second < 0) {
                     this.second = 0;
                 }
-                if (this.hour.toString().length > 3 || this.hour < 0) {
+                if (this.hour < 0) {
                     this.hour = 0;
+                }
+                if (this.hour > this.maxHour) {
+                    this.hour = this.maxHour;
                 }
                 this.updateValue();
             });
@@ -285,8 +293,10 @@ class NgxTimepicker12Component {
                 }
                 else {
                     this.hour = parseInt(this.hour.toString() + num);
-                    this.selected = 'minute';
-                    this.newInput = true;
+                    if (this.hour.toString().length == this.maxHour.toString().length) {
+                        this.selected = 'minute';
+                        this.newInput = true;
+                    }
                 }
             }
             if (local == 'minute') {
@@ -361,6 +371,12 @@ class NgxTimepicker12Component {
                 this.responseChange.emit(respostaSeparada);
                 break;
         }
+    }
+    maxClock() {
+        this.hour = this.maxHour;
+        this.minute = this.maxMinute;
+        this.second = this.maxSecond;
+        this.fecharMenu(this.menuTrigger);
     }
     nowClock() {
         const agora = new Date();
@@ -466,6 +482,7 @@ NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
+        <button mat-raised-button *ngIf="max !== '23:59:59'" (click)="maxClock()">Max</button>
         <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>
@@ -497,6 +514,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImpo
         <div id="secondClock"></div>
       </div>
       <div class="footerClock">
+        <button mat-raised-button *ngIf="max !== '23:59:59'" (click)="maxClock()">Max</button>
         <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
         <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
       </div>

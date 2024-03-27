@@ -39,6 +39,7 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     digitar(num: number, local: 'hour' | 'minute' | 'second' | null): void;
     error(): import("rxjs").Observable<never>;
     updateValue(): void;
+    maxClock(): void;
     nowClock(): void;
     fecharMenu(trigger: MatMenuTrigger): void;
     preencherDivs(): void;
