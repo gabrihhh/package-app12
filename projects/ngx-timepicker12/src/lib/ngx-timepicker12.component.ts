@@ -147,14 +147,20 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
     }
     if(this.responseString){
       let array = this.responseString.split(':');
-      if(this.needSeconds){
-        this.hour = parseInt(array[0]);
-        this.minute = parseInt(array[1]);
-        this.second = parseInt(array[2]);
-      }else{
-        this.hour = parseInt(array[0]);
-        this.minute = parseInt(array[1]);
-      }
+        if(this.needSeconds){
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+            this.second = parseInt(array[2]);
+        }else{
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+            
+        }
+        if(isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)){
+          this.hour = 0
+          this.minute = 0
+          this.second = 0
+        }
     }
     if(this.response){
       let time = this.response
