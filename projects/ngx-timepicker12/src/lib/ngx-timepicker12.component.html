@@ -1,0 +1,55 @@
+<div 
+class="timepicker"
+[style.width]="widthCss" 
+[style.height]="heightCss"  
+[style.borderBottom]="disabled ? '1px solid gray' : '1px solid black'">
+  <div 
+  id="hour" 
+  tabindex="1" 
+  (blur)="lostFocus()" 
+  (focus)="focus($event)" 
+  [style.background-color]="selected==='hour'? cor : 'transparent'" 
+  [style.color]="disabled ? 'gray' : 'black'"
+  (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}
+</div>
+  <div
+  [style.color]="disabled ? 'gray' : 'black'"
+  >:</div>
+  <div 
+  id="minute" 
+  tabindex="1" 
+  (blur)="lostFocus()" 
+  (focus)="focus($event)" 
+  [style.background-color]="selected==='minute'? cor : 'transparent'" 
+  [style.color]="disabled ? 'gray' : 'black'"
+  (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
+  <div *ngIf="needSeconds"
+  [style.color]="disabled ? 'gray' : 'black'"
+  >:</div>
+  <div 
+  *ngIf="needSeconds" 
+  id="second" [style.color]="disabled ? 'gray' : 'black'" 
+  tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" 
+  [style.background-color]="selected==='second'? cor : 'transparent'" 
+  (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}
+  </div>
+  <button *ngIf="!disabled" mat-icon-button style="padding:20px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
+      <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <mat-menu #aboveMenu="matMenu" yPosition="above">
+  <div class="matMenuClock" (click)="$event.stopPropagation();">
+    <div class="numbers">
+      <div id="hourClock"></div>
+      <div id="minuteClock"></div>
+      <div id="secondClock"></div>
+    </div>
+    <div class="footerClock">
+      <button mat-raised-button *ngIf="max !== '23:59:59'" (click)="maxClock()">Max</button>
+      <button mat-raised-button *ngIf="max == '23:59:59'" (click)="nowClock()">Now</button>
+      <button mat-raised-button [disabled]="disableClock" (click)="confirmClock()">Ok</button>
+    </div>
+  </div>
+  </mat-menu>
+</div>
