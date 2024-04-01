@@ -1,7 +1,7 @@
-import { AfterViewInit, EventEmitter, OnInit } from '@angular/core';
+import { AfterViewInit, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import * as i0 from "@angular/core";
-export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
+export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, OnChanges {
     menuTrigger: MatMenuTrigger;
     width: number;
     height: number;
@@ -32,6 +32,8 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit {
     private newInput;
     constructor();
     ngOnInit(): void;
+    ngOnChanges(changes: any): void;
+    init(responseString: String): void;
     ngAfterViewInit(): void;
     lostFocus(): void;
     focus($event: any): void;

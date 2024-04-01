@@ -7,13 +7,13 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public valor: string | null= null
-  public maximo:string = '00:00:00'
+  public valor: string | null= "20:20:20"
+  public teste2:boolean = true
 
   teste(){
     console.log(this.valor)
   }
   mudar(){
-    this.valor = "20:20:20"
+    this.teste2 = !this.teste2
   }
 }

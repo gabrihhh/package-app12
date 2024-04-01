@@ -46,21 +46,7 @@ class NgxTimepicker12Component {
             this.maxSecond = parseInt(arrayMax[2]);
         }
         if (this.responseString) {
-            let array = this.responseString.split(':');
-            if (this.needSeconds) {
-                this.hour = parseInt(array[0]);
-                this.minute = parseInt(array[1]);
-                this.second = parseInt(array[2]);
-            }
-            else {
-                this.hour = parseInt(array[0]);
-                this.minute = parseInt(array[1]);
-            }
-            if (isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)) {
-                this.hour = 0;
-                this.minute = 0;
-                this.second = 0;
-            }
+            this.init(this.responseString);
         }
         if (this.response) {
             let time = this.response;
@@ -75,6 +61,33 @@ class NgxTimepicker12Component {
             if (time) {
                 this.second = time;
             }
+        }
+    }
+    ngOnChanges(changes) {
+        // Verifica se 'responseString' foi a propriedade que mudou
+        if (changes['responseString']) {
+            // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+            const currentValue = changes['responseString'].currentValue;
+            if (currentValue) {
+                this.init(currentValue);
+            }
+        }
+    }
+    init(responseString) {
+        let array = responseString.split(':');
+        if (this.needSeconds) {
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+            this.second = parseInt(array[2]);
+        }
+        else {
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+        }
+        if (isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)) {
+            this.hour = 0;
+            this.minute = 0;
+            this.second = 0;
         }
     }
     ngAfterViewInit() {
@@ -462,7 +475,7 @@ class NgxTimepicker12Component {
     }
 }
 NgxTimepicker12Component.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0, type: NgxTimepicker12Component, deps: [], target: i0.ɵɵFactoryTarget.Component });
-NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor", disabled: "disabled" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], ngImport: i0, template: `
+NgxTimepicker12Component.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor", disabled: "disabled" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], usesOnChanges: true, ngImport: i0, template: `
   <div [style.width]="widthCss" [style.height]="heightCss" class="timepicker">
     <div id="hour" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='hour'? cor : 'transparent'" (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>
     <div>:</div>

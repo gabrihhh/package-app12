@@ -65,21 +65,7 @@
               this.maxSecond = parseInt(arrayMax[2]);
           }
           if (this.responseString) {
-              var array = this.responseString.split(':');
-              if (this.needSeconds) {
-                  this.hour = parseInt(array[0]);
-                  this.minute = parseInt(array[1]);
-                  this.second = parseInt(array[2]);
-              }
-              else {
-                  this.hour = parseInt(array[0]);
-                  this.minute = parseInt(array[1]);
-              }
-              if (isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)) {
-                  this.hour = 0;
-                  this.minute = 0;
-                  this.second = 0;
-              }
+              this.init(this.responseString);
           }
           if (this.response) {
               var time = this.response;
@@ -94,6 +80,33 @@
               if (time) {
                   this.second = time;
               }
+          }
+      };
+      NgxTimepicker12Component.prototype.ngOnChanges = function (changes) {
+          // Verifica se 'responseString' foi a propriedade que mudou
+          if (changes['responseString']) {
+              // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+              var currentValue = changes['responseString'].currentValue;
+              if (currentValue) {
+                  this.init(currentValue);
+              }
+          }
+      };
+      NgxTimepicker12Component.prototype.init = function (responseString) {
+          var array = responseString.split(':');
+          if (this.needSeconds) {
+              this.hour = parseInt(array[0]);
+              this.minute = parseInt(array[1]);
+              this.second = parseInt(array[2]);
+          }
+          else {
+              this.hour = parseInt(array[0]);
+              this.minute = parseInt(array[1]);
+          }
+          if (isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)) {
+              this.hour = 0;
+              this.minute = 0;
+              this.second = 0;
           }
       };
       NgxTimepicker12Component.prototype.ngAfterViewInit = function () {
@@ -487,7 +500,7 @@
       return NgxTimepicker12Component;
   }());
   NgxTimepicker12Component.ɵfac = i0__namespace.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Component, deps: [], target: i0__namespace.ɵɵFactoryTarget.Component });
-  NgxTimepicker12Component.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor", disabled: "disabled" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], ngImport: i0__namespace, template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n    <button *ngIf=\"!disabled\" mat-button style=\"padding:10px;position:relative;bottom:1px\" [matMenuTriggerFor]=\"aboveMenu\" #trigger=\"matMenuTrigger\" class=\"btnClock\" (click)=\"preencherDivs()\">\n      <svg width=\"20px\" height=\"20px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 17px;\">\n        <path d=\"M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n      </svg>\n    </button>\n    <mat-menu #aboveMenu=\"matMenu\" yPosition=\"above\">\n    <div class=\"matMenuClock\" (click)=\"$event.stopPropagation();\">\n      <div class=\"numbers\">\n        <div id=\"hourClock\"></div>\n        <div id=\"minuteClock\"></div>\n        <div id=\"secondClock\"></div>\n      </div>\n      <div class=\"footerClock\">\n        <button mat-raised-button *ngIf=\"max !== '23:59:59'\" (click)=\"maxClock()\">Max</button>\n        <button mat-raised-button *ngIf=\"max == '23:59:59'\" (click)=\"nowClock()\">Now</button>\n        <button mat-raised-button [disabled]=\"disableClock\" (click)=\"confirmClock()\">Ok</button>\n      </div>\n    </div>\n    </mat-menu>\n  </div>\n", isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n      scrollbar-width: none;\n    }\n    .numbers>div::-webkit-scrollbar{\n      display:none;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "], components: [{ type: i1__namespace.MatButton, selector: "button[mat-button], button[mat-raised-button], button[mat-icon-button],             button[mat-fab], button[mat-mini-fab], button[mat-stroked-button],             button[mat-flat-button]", inputs: ["disabled", "disableRipple", "color"], exportAs: ["matButton"] }, { type: i2__namespace.MatMenu, selector: "mat-menu", exportAs: ["matMenu"] }], directives: [{ type: i3__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i2__namespace.MatMenuTrigger, selector: "[mat-menu-trigger-for], [matMenuTriggerFor]", exportAs: ["matMenuTrigger"] }] });
+  NgxTimepicker12Component.ɵcmp = i0__namespace.ɵɵngDeclareComponent({ minVersion: "12.0.0", version: "12.2.17", type: NgxTimepicker12Component, selector: "ngx-timepicker", inputs: { width: "width", height: "height", font: "font", max: "max", response: "response", responseString: "responseString", needSeconds: "needSeconds", type: "type", cor: "cor", disabled: "disabled" }, outputs: { responseChange: "responseChange", responseStringChange: "responseStringChange" }, viewQueries: [{ propertyName: "menuTrigger", first: true, predicate: ["trigger"], descendants: true }], usesOnChanges: true, ngImport: i0__namespace, template: "\n  <div [style.width]=\"widthCss\" [style.height]=\"heightCss\" class=\"timepicker\">\n    <div id=\"hour\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='hour'? cor : 'transparent'\" (click)=\"focus($event)\">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>\n    <div>:</div>\n    <div id=\"minute\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='minute'? cor : 'transparent'\" (click)=\"focus($event)\">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>\n    <div *ngIf=\"needSeconds\">:</div>\n    <div *ngIf=\"needSeconds\" id=\"second\" tabindex=\"1\" (blur)=\"lostFocus()\" (focus)=\"focus($event)\" [style.background-color]=\"selected==='second'? cor : 'transparent'\" (click)=\"focus($event)\">{{second.toString().length===1?'0'+this.second:this.second}}</div>\n    <button *ngIf=\"!disabled\" mat-button style=\"padding:10px;position:relative;bottom:1px\" [matMenuTriggerFor]=\"aboveMenu\" #trigger=\"matMenuTrigger\" class=\"btnClock\" (click)=\"preencherDivs()\">\n      <svg width=\"20px\" height=\"20px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 17px;\">\n        <path d=\"M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n      </svg>\n    </button>\n    <mat-menu #aboveMenu=\"matMenu\" yPosition=\"above\">\n    <div class=\"matMenuClock\" (click)=\"$event.stopPropagation();\">\n      <div class=\"numbers\">\n        <div id=\"hourClock\"></div>\n        <div id=\"minuteClock\"></div>\n        <div id=\"secondClock\"></div>\n      </div>\n      <div class=\"footerClock\">\n        <button mat-raised-button *ngIf=\"max !== '23:59:59'\" (click)=\"maxClock()\">Max</button>\n        <button mat-raised-button *ngIf=\"max == '23:59:59'\" (click)=\"nowClock()\">Now</button>\n        <button mat-raised-button [disabled]=\"disableClock\" (click)=\"confirmClock()\">Ok</button>\n      </div>\n    </div>\n    </mat-menu>\n  </div>\n", isInline: true, styles: [".timepicker{\n      border-bottom: 1px solid gray;\n      display: flex;\n      flex-wrap: nowrap;\n      justify-content: center;\n      align-items: center;\n    }\n    div{\n      -webkit-user-select: none; /* Safari */\n      -moz-user-select: none; /* Firefox */\n      -ms-user-select: none; /* IE10+/Edge */\n      user-select: none;\n    }\n    div:focus{\n      outline:none;\n    }\n    .btnClock{\n      margin:0 5px;\n      height:30px;\n      min-width:25px;\n      display:flex;\n      justify-content:center;\n      align-items:center;\n    }\n    .btnClock{\n      display:flex;\n      justify-content:center;\n      align-items:center;\n      min-height:25px;\n      height:25px;\n    }\n    .matMenuClock{\n      width:150px;\n      height:150px;\n      display:flex;\n      flex-direction:column;\n    }\n    .numbers{\n      width:150px;\n      height:120px;\n      display:flex;\n    }\n    .numbers>div{\n      width:50px;\n      height:120px;\n      display:flex;\n      flex-direction:column;\n      align-items:center;\n      overflow:scroll;\n      scrollbar-width: none;\n    }\n    .numbers>div::-webkit-scrollbar{\n      display:none;\n    }\n    .footerClock{\n      width:150px;\n      height:30px;\n      display:flex;\n      justify-content:space-around;\n      align-items:center;\n      button{\n        min-width:50px;\n        min-height:20px;\n        width:50px;\n        height:20px;\n        font-size:15px;\n        display:flex;\n        justify-content:center;\n        align-items:center;\n      }\n    }\n    "], components: [{ type: i1__namespace.MatButton, selector: "button[mat-button], button[mat-raised-button], button[mat-icon-button],             button[mat-fab], button[mat-mini-fab], button[mat-stroked-button],             button[mat-flat-button]", inputs: ["disabled", "disableRipple", "color"], exportAs: ["matButton"] }, { type: i2__namespace.MatMenu, selector: "mat-menu", exportAs: ["matMenu"] }], directives: [{ type: i3__namespace.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { type: i2__namespace.MatMenuTrigger, selector: "[mat-menu-trigger-for], [matMenuTriggerFor]", exportAs: ["matMenuTrigger"] }] });
   i0__namespace.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.17", ngImport: i0__namespace, type: NgxTimepicker12Component, decorators: [{
               type: i0.Component,
               args: [{

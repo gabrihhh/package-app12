@@ -174,6 +174,23 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
         this.init(currentValue)
       }
     }
+    if (changes['disabled']) {
+      // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+      const currentValue = changes['disabled'].currentValue;
+      this.disabled = currentValue
+      const hour = document.getElementById('hour');
+      const minute = document.getElementById('minute');
+      const second = document.getElementById('second');
+      if(!this.disabled){
+        if(hour){hour.style.cursor = "pointer"};
+        if(minute){minute.style.cursor = "pointer"}
+        if(second){second.style.cursor = "pointer"}
+      }else{
+        if(hour){hour.style.cursor = "auto"};
+        if(minute){minute.style.cursor = "auto"}
+        if(second){second.style.cursor = "auto"}
+      }
+    }
   }
 
   public init(responseString:String){
@@ -194,14 +211,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
         }
   }
   ngAfterViewInit(): void {
-    if(!this.disabled){
-      const hour = document.getElementById('hour');
-      if(hour){hour.style.cursor = "pointer"};
-      const minute = document.getElementById('minute');
-      if(minute){minute.style.cursor = "pointer"}
-      const second = document.getElementById('second');
-      if(second){second.style.cursor = "pointer"}
-      
       document.addEventListener('keydown',(e)=>{
         if(e.code == 'Tab'){
           switch(this.selected){
@@ -340,7 +349,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
         }
         this.updateValue()
       })
-    }
   }
 
   public lostFocus(){
