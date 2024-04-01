@@ -4,13 +4,38 @@ import { throwError } from 'rxjs';
 @Component({
   selector: 'ngx-timepicker',
   template: `
-  <div [style.width]="widthCss" [style.height]="heightCss" class="timepicker">
-    <div id="hour" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='hour'? cor : 'transparent'" (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}</div>
+  <div 
+  class="timepicker"
+  [style.width]="widthCss" 
+  [style.height]="heightCss"  
+  [style.borderBottom]="disabled ? '1px solid gray' : '1px solid black'">
+    <div 
+    id="hour" 
+    tabindex="1" 
+    (blur)="lostFocus()" 
+    (focus)="focus($event)" 
+    [style.background-color]="selected==='hour'? cor : 'transparent'" 
+    [style.color]="disabled ? 'gray' : 'black'"
+    (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}
+  </div>
     <div>:</div>
-    <div id="minute" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='minute'? cor : 'transparent'" (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
+    <div 
+    id="minute" 
+    tabindex="1" 
+    (blur)="lostFocus()" 
+    (focus)="focus($event)" 
+    [style.background-color]="selected==='minute'? cor : 'transparent'" 
+    [style.color]="disabled ? 'gray' : 'black'"
+    (click)="focus($event)">{{minute.toString().length===1?'0'+this.minute:this.minute}}</div>
     <div *ngIf="needSeconds">:</div>
-    <div *ngIf="needSeconds" id="second" tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" [style.background-color]="selected==='second'? cor : 'transparent'" (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}</div>
-    <button *ngIf="!disabled" mat-button style="padding:10px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
+    <div 
+    *ngIf="needSeconds" 
+    id="second" [style.color]="disabled ? 'gray' : 'black'" 
+    tabindex="1" (blur)="lostFocus()" (focus)="focus($event)" 
+    [style.background-color]="selected==='second'? cor : 'transparent'" 
+    (click)="focus($event)">{{second.toString().length===1?'0'+this.second:this.second}}
+    </div>
+    <button *ngIf="!disabled" mat-icon-button style="padding:20px;position:relative;bottom:1px" [matMenuTriggerFor]="aboveMenu" #trigger="matMenuTrigger" class="btnClock" (click)="preencherDivs()">
       <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 17px;">
         <path d="M12 7V12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -172,24 +197,14 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
       const currentValue = changes['responseString'].currentValue;
       if(currentValue){
         this.init(currentValue)
+      }else{
+        this.init("00:00:00");
       }
     }
     if (changes['disabled']) {
       // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
       const currentValue = changes['disabled'].currentValue;
       this.disabled = currentValue
-      const hour = document.getElementById('hour');
-      const minute = document.getElementById('minute');
-      const second = document.getElementById('second');
-      if(!this.disabled){
-        if(hour){hour.style.cursor = "pointer"};
-        if(minute){minute.style.cursor = "pointer"}
-        if(second){second.style.cursor = "pointer"}
-      }else{
-        if(hour){hour.style.cursor = "auto"};
-        if(minute){minute.style.cursor = "auto"}
-        if(second){second.style.cursor = "auto"}
-      }
     }
   }
 

@@ -13,7 +13,14 @@ export class AppComponent {
   teste(){
     console.log(this.valor)
   }
-  mudar(){
+  mudarvalue(){
+    if(this.valor){
+      this.valor = null
+    }else{
+      this.valor = "20:20:20"
+    }
+  }
+  mudardisabled(){
     this.teste2 = !this.teste2
   }
 }

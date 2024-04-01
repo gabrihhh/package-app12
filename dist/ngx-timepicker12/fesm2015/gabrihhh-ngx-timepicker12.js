@@ -72,6 +72,38 @@ class NgxTimepicker12Component {
                 this.init(currentValue);
             }
         }
+        if (changes['disabled']) {
+            // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+            const currentValue = changes['disabled'].currentValue;
+            this.disabled = currentValue;
+            const hour = document.getElementById('hour');
+            const minute = document.getElementById('minute');
+            const second = document.getElementById('second');
+            if (!this.disabled) {
+                if (hour) {
+                    hour.style.cursor = "pointer";
+                }
+                ;
+                if (minute) {
+                    minute.style.cursor = "pointer";
+                }
+                if (second) {
+                    second.style.cursor = "pointer";
+                }
+            }
+            else {
+                if (hour) {
+                    hour.style.cursor = "auto";
+                }
+                ;
+                if (minute) {
+                    minute.style.cursor = "auto";
+                }
+                if (second) {
+                    second.style.cursor = "auto";
+                }
+            }
+        }
     }
     init(responseString) {
         let array = responseString.split(':');
@@ -91,159 +123,144 @@ class NgxTimepicker12Component {
         }
     }
     ngAfterViewInit() {
-        if (!this.disabled) {
-            const hour = document.getElementById('hour');
-            if (hour) {
-                hour.style.cursor = "pointer";
+        document.addEventListener('keydown', (e) => {
+            if (e.code == 'Tab') {
+                switch (this.selected) {
+                    case 'hour':
+                        this.selected = 'minute';
+                        break;
+                    case 'minute':
+                        this.selected = 'second';
+                        break;
+                    case 'second':
+                        this.selected = null;
+                        break;
+                }
             }
-            ;
-            const minute = document.getElementById('minute');
-            if (minute) {
-                minute.style.cursor = "pointer";
+            if (e.code == 'ArrowUp') {
+                e.preventDefault();
+                switch (this.selected) {
+                    case 'hour':
+                        this.hour++;
+                        break;
+                    case 'minute':
+                        this.minute++;
+                        break;
+                    case 'second':
+                        this.second++;
+                        break;
+                }
             }
-            const second = document.getElementById('second');
-            if (second) {
-                second.style.cursor = "pointer";
+            if (e.code == 'ArrowDown') {
+                e.preventDefault();
+                switch (this.selected) {
+                    case 'hour':
+                        if (this.hour == 0) {
+                            this.hour = this.maxHour;
+                        }
+                        else {
+                            this.hour--;
+                        }
+                        break;
+                    case 'minute':
+                        if (this.minute == 0) {
+                            this.minute = 59;
+                        }
+                        else {
+                            this.minute--;
+                        }
+                        break;
+                    case 'second':
+                        if (this.second == 0) {
+                            this.second = 59;
+                        }
+                        else {
+                            this.second--;
+                        }
+                        break;
+                }
             }
-            document.addEventListener('keydown', (e) => {
-                if (e.code == 'Tab') {
-                    switch (this.selected) {
-                        case 'hour':
-                            this.selected = 'minute';
-                            break;
-                        case 'minute':
-                            this.selected = 'second';
-                            break;
-                        case 'second':
-                            this.selected = null;
-                            break;
-                    }
-                }
-                if (e.code == 'ArrowUp') {
-                    e.preventDefault();
-                    switch (this.selected) {
-                        case 'hour':
-                            this.hour++;
-                            break;
-                        case 'minute':
-                            this.minute++;
-                            break;
-                        case 'second':
-                            this.second++;
-                            break;
-                    }
-                }
-                if (e.code == 'ArrowDown') {
-                    e.preventDefault();
-                    switch (this.selected) {
-                        case 'hour':
-                            if (this.hour == 0) {
-                                this.hour = this.maxHour;
-                            }
-                            else {
-                                this.hour--;
-                            }
-                            break;
-                        case 'minute':
-                            if (this.minute == 0) {
-                                this.minute = 59;
-                            }
-                            else {
-                                this.minute--;
-                            }
-                            break;
-                        case 'second':
-                            if (this.second == 0) {
-                                this.second = 59;
-                            }
-                            else {
-                                this.second--;
-                            }
-                            break;
-                    }
-                }
-                if (e.code == 'ArrowRight') {
-                    e.preventDefault();
-                    switch (this.selected) {
-                        case 'hour':
-                            this.selected = 'minute';
-                            break;
-                        case 'minute':
-                            this.selected = 'second';
-                            break;
-                    }
-                }
-                if (e.code == 'ArrowLeft') {
-                    e.preventDefault();
-                    switch (this.selected) {
-                        case 'second':
-                            this.selected = 'minute';
-                            break;
-                        case 'minute':
-                            this.selected = 'hour';
-                            break;
-                    }
-                }
-                if (e.code == 'Backspace') {
-                    switch (this.selected) {
-                        case 'hour':
-                            this.apagar('hour');
-                            break;
-                        case 'minute':
-                            this.apagar('minute');
-                            break;
-                        case 'second':
-                            this.apagar('second');
-                            break;
-                    }
-                }
-                switch (e.key) {
-                    case '1':
-                        this.digitar(1, this.selected);
+            if (e.code == 'ArrowRight') {
+                e.preventDefault();
+                switch (this.selected) {
+                    case 'hour':
+                        this.selected = 'minute';
                         break;
-                    case '2':
-                        this.digitar(2, this.selected);
-                        break;
-                    case '3':
-                        this.digitar(3, this.selected);
-                        break;
-                    case '4':
-                        this.digitar(4, this.selected);
-                        break;
-                    case '5':
-                        this.digitar(5, this.selected);
-                        break;
-                    case '6':
-                        this.digitar(6, this.selected);
-                        break;
-                    case '7':
-                        this.digitar(7, this.selected);
-                        break;
-                    case '8':
-                        this.digitar(8, this.selected);
-                        break;
-                    case '9':
-                        this.digitar(9, this.selected);
-                        break;
-                    case '0':
-                        this.digitar(0, this.selected);
+                    case 'minute':
+                        this.selected = 'second';
                         break;
                 }
-                if (this.minute > 59 || this.minute < 0) {
-                    this.minute = 0;
+            }
+            if (e.code == 'ArrowLeft') {
+                e.preventDefault();
+                switch (this.selected) {
+                    case 'second':
+                        this.selected = 'minute';
+                        break;
+                    case 'minute':
+                        this.selected = 'hour';
+                        break;
                 }
-                if (this.second > 59 || this.second < 0) {
-                    this.second = 0;
+            }
+            if (e.code == 'Backspace') {
+                switch (this.selected) {
+                    case 'hour':
+                        this.apagar('hour');
+                        break;
+                    case 'minute':
+                        this.apagar('minute');
+                        break;
+                    case 'second':
+                        this.apagar('second');
+                        break;
                 }
-                if (this.hour < 0) {
-                    this.hour = 0;
-                }
-                if (this.hour > this.maxHour) {
-                    this.hour = this.maxHour;
-                }
-                this.updateValue();
-            });
-        }
+            }
+            switch (e.key) {
+                case '1':
+                    this.digitar(1, this.selected);
+                    break;
+                case '2':
+                    this.digitar(2, this.selected);
+                    break;
+                case '3':
+                    this.digitar(3, this.selected);
+                    break;
+                case '4':
+                    this.digitar(4, this.selected);
+                    break;
+                case '5':
+                    this.digitar(5, this.selected);
+                    break;
+                case '6':
+                    this.digitar(6, this.selected);
+                    break;
+                case '7':
+                    this.digitar(7, this.selected);
+                    break;
+                case '8':
+                    this.digitar(8, this.selected);
+                    break;
+                case '9':
+                    this.digitar(9, this.selected);
+                    break;
+                case '0':
+                    this.digitar(0, this.selected);
+                    break;
+            }
+            if (this.minute > 59 || this.minute < 0) {
+                this.minute = 0;
+            }
+            if (this.second > 59 || this.second < 0) {
+                this.second = 0;
+            }
+            if (this.hour < 0) {
+                this.hour = 0;
+            }
+            if (this.hour > this.maxHour) {
+                this.hour = this.maxHour;
+            }
+            this.updateValue();
+        });
     }
     lostFocus() {
         this.selected = null;

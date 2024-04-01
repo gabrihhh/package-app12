@@ -91,6 +91,38 @@
                   this.init(currentValue);
               }
           }
+          if (changes['disabled']) {
+              // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+              var currentValue = changes['disabled'].currentValue;
+              this.disabled = currentValue;
+              var hour = document.getElementById('hour');
+              var minute = document.getElementById('minute');
+              var second = document.getElementById('second');
+              if (!this.disabled) {
+                  if (hour) {
+                      hour.style.cursor = "pointer";
+                  }
+                  ;
+                  if (minute) {
+                      minute.style.cursor = "pointer";
+                  }
+                  if (second) {
+                      second.style.cursor = "pointer";
+                  }
+              }
+              else {
+                  if (hour) {
+                      hour.style.cursor = "auto";
+                  }
+                  ;
+                  if (minute) {
+                      minute.style.cursor = "auto";
+                  }
+                  if (second) {
+                      second.style.cursor = "auto";
+                  }
+              }
+          }
       };
       NgxTimepicker12Component.prototype.init = function (responseString) {
           var array = responseString.split(':');
@@ -111,159 +143,144 @@
       };
       NgxTimepicker12Component.prototype.ngAfterViewInit = function () {
           var _this = this;
-          if (!this.disabled) {
-              var hour = document.getElementById('hour');
-              if (hour) {
-                  hour.style.cursor = "pointer";
+          document.addEventListener('keydown', function (e) {
+              if (e.code == 'Tab') {
+                  switch (_this.selected) {
+                      case 'hour':
+                          _this.selected = 'minute';
+                          break;
+                      case 'minute':
+                          _this.selected = 'second';
+                          break;
+                      case 'second':
+                          _this.selected = null;
+                          break;
+                  }
               }
-              ;
-              var minute = document.getElementById('minute');
-              if (minute) {
-                  minute.style.cursor = "pointer";
+              if (e.code == 'ArrowUp') {
+                  e.preventDefault();
+                  switch (_this.selected) {
+                      case 'hour':
+                          _this.hour++;
+                          break;
+                      case 'minute':
+                          _this.minute++;
+                          break;
+                      case 'second':
+                          _this.second++;
+                          break;
+                  }
               }
-              var second = document.getElementById('second');
-              if (second) {
-                  second.style.cursor = "pointer";
+              if (e.code == 'ArrowDown') {
+                  e.preventDefault();
+                  switch (_this.selected) {
+                      case 'hour':
+                          if (_this.hour == 0) {
+                              _this.hour = _this.maxHour;
+                          }
+                          else {
+                              _this.hour--;
+                          }
+                          break;
+                      case 'minute':
+                          if (_this.minute == 0) {
+                              _this.minute = 59;
+                          }
+                          else {
+                              _this.minute--;
+                          }
+                          break;
+                      case 'second':
+                          if (_this.second == 0) {
+                              _this.second = 59;
+                          }
+                          else {
+                              _this.second--;
+                          }
+                          break;
+                  }
               }
-              document.addEventListener('keydown', function (e) {
-                  if (e.code == 'Tab') {
-                      switch (_this.selected) {
-                          case 'hour':
-                              _this.selected = 'minute';
-                              break;
-                          case 'minute':
-                              _this.selected = 'second';
-                              break;
-                          case 'second':
-                              _this.selected = null;
-                              break;
-                      }
-                  }
-                  if (e.code == 'ArrowUp') {
-                      e.preventDefault();
-                      switch (_this.selected) {
-                          case 'hour':
-                              _this.hour++;
-                              break;
-                          case 'minute':
-                              _this.minute++;
-                              break;
-                          case 'second':
-                              _this.second++;
-                              break;
-                      }
-                  }
-                  if (e.code == 'ArrowDown') {
-                      e.preventDefault();
-                      switch (_this.selected) {
-                          case 'hour':
-                              if (_this.hour == 0) {
-                                  _this.hour = _this.maxHour;
-                              }
-                              else {
-                                  _this.hour--;
-                              }
-                              break;
-                          case 'minute':
-                              if (_this.minute == 0) {
-                                  _this.minute = 59;
-                              }
-                              else {
-                                  _this.minute--;
-                              }
-                              break;
-                          case 'second':
-                              if (_this.second == 0) {
-                                  _this.second = 59;
-                              }
-                              else {
-                                  _this.second--;
-                              }
-                              break;
-                      }
-                  }
-                  if (e.code == 'ArrowRight') {
-                      e.preventDefault();
-                      switch (_this.selected) {
-                          case 'hour':
-                              _this.selected = 'minute';
-                              break;
-                          case 'minute':
-                              _this.selected = 'second';
-                              break;
-                      }
-                  }
-                  if (e.code == 'ArrowLeft') {
-                      e.preventDefault();
-                      switch (_this.selected) {
-                          case 'second':
-                              _this.selected = 'minute';
-                              break;
-                          case 'minute':
-                              _this.selected = 'hour';
-                              break;
-                      }
-                  }
-                  if (e.code == 'Backspace') {
-                      switch (_this.selected) {
-                          case 'hour':
-                              _this.apagar('hour');
-                              break;
-                          case 'minute':
-                              _this.apagar('minute');
-                              break;
-                          case 'second':
-                              _this.apagar('second');
-                              break;
-                      }
-                  }
-                  switch (e.key) {
-                      case '1':
-                          _this.digitar(1, _this.selected);
+              if (e.code == 'ArrowRight') {
+                  e.preventDefault();
+                  switch (_this.selected) {
+                      case 'hour':
+                          _this.selected = 'minute';
                           break;
-                      case '2':
-                          _this.digitar(2, _this.selected);
-                          break;
-                      case '3':
-                          _this.digitar(3, _this.selected);
-                          break;
-                      case '4':
-                          _this.digitar(4, _this.selected);
-                          break;
-                      case '5':
-                          _this.digitar(5, _this.selected);
-                          break;
-                      case '6':
-                          _this.digitar(6, _this.selected);
-                          break;
-                      case '7':
-                          _this.digitar(7, _this.selected);
-                          break;
-                      case '8':
-                          _this.digitar(8, _this.selected);
-                          break;
-                      case '9':
-                          _this.digitar(9, _this.selected);
-                          break;
-                      case '0':
-                          _this.digitar(0, _this.selected);
+                      case 'minute':
+                          _this.selected = 'second';
                           break;
                   }
-                  if (_this.minute > 59 || _this.minute < 0) {
-                      _this.minute = 0;
+              }
+              if (e.code == 'ArrowLeft') {
+                  e.preventDefault();
+                  switch (_this.selected) {
+                      case 'second':
+                          _this.selected = 'minute';
+                          break;
+                      case 'minute':
+                          _this.selected = 'hour';
+                          break;
                   }
-                  if (_this.second > 59 || _this.second < 0) {
-                      _this.second = 0;
+              }
+              if (e.code == 'Backspace') {
+                  switch (_this.selected) {
+                      case 'hour':
+                          _this.apagar('hour');
+                          break;
+                      case 'minute':
+                          _this.apagar('minute');
+                          break;
+                      case 'second':
+                          _this.apagar('second');
+                          break;
                   }
-                  if (_this.hour < 0) {
-                      _this.hour = 0;
-                  }
-                  if (_this.hour > _this.maxHour) {
-                      _this.hour = _this.maxHour;
-                  }
-                  _this.updateValue();
-              });
-          }
+              }
+              switch (e.key) {
+                  case '1':
+                      _this.digitar(1, _this.selected);
+                      break;
+                  case '2':
+                      _this.digitar(2, _this.selected);
+                      break;
+                  case '3':
+                      _this.digitar(3, _this.selected);
+                      break;
+                  case '4':
+                      _this.digitar(4, _this.selected);
+                      break;
+                  case '5':
+                      _this.digitar(5, _this.selected);
+                      break;
+                  case '6':
+                      _this.digitar(6, _this.selected);
+                      break;
+                  case '7':
+                      _this.digitar(7, _this.selected);
+                      break;
+                  case '8':
+                      _this.digitar(8, _this.selected);
+                      break;
+                  case '9':
+                      _this.digitar(9, _this.selected);
+                      break;
+                  case '0':
+                      _this.digitar(0, _this.selected);
+                      break;
+              }
+              if (_this.minute > 59 || _this.minute < 0) {
+                  _this.minute = 0;
+              }
+              if (_this.second > 59 || _this.second < 0) {
+                  _this.second = 0;
+              }
+              if (_this.hour < 0) {
+                  _this.hour = 0;
+              }
+              if (_this.hour > _this.maxHour) {
+                  _this.hour = _this.maxHour;
+              }
+              _this.updateValue();
+          });
       };
       NgxTimepicker12Component.prototype.lostFocus = function () {
           this.selected = null;
