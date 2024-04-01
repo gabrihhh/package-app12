@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { throwError } from 'rxjs';
 @Component({
@@ -106,7 +106,7 @@ import { throwError } from 'rxjs';
     `
   ]
 })
-export class NgxTimepicker12Component implements OnInit,AfterViewInit{
+export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   @ViewChild('trigger') menuTrigger!: MatMenuTrigger;
   @Input() width:number = 130;
   @Input() height:number = 40;
@@ -138,6 +138,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
   private newInput:boolean = true;
   constructor(){
   }
+
   ngOnInit(): void {
     if(this.max != ''){
       const arrayMax = this.max.split(':');
@@ -146,21 +147,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       this.maxSecond=parseInt(arrayMax[2])
     }
     if(this.responseString){
-      let array = this.responseString.split(':');
-        if(this.needSeconds){
-            this.hour = parseInt(array[0]);
-            this.minute = parseInt(array[1]);
-            this.second = parseInt(array[2]);
-        }else{
-            this.hour = parseInt(array[0]);
-            this.minute = parseInt(array[1]);
-            
-        }
-        if(isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)){
-          this.hour = 0
-          this.minute = 0
-          this.second = 0
-        }
+      this.init(this.responseString)
     }
     if(this.response){
       let time = this.response
@@ -178,6 +165,34 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
     }
   }
 
+  ngOnChanges(changes: any) {
+    // Verifica se 'responseString' foi a propriedade que mudou
+    if (changes['responseString']) {
+      // const previousValue = changes['responseString'].previousValue; --- caso precise do valor antes da mudança do input
+      const currentValue = changes['responseString'].currentValue;
+      if(currentValue){
+        this.init(currentValue)
+      }
+    }
+  }
+
+  public init(responseString:String){
+    let array = responseString.split(':');
+        if(this.needSeconds){
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+            this.second = parseInt(array[2]);
+        }else{
+            this.hour = parseInt(array[0]);
+            this.minute = parseInt(array[1]);
+            
+        }
+        if(isNaN(this.hour) || isNaN(this.minute) || isNaN(this.second)){
+          this.hour = 0
+          this.minute = 0
+          this.second = 0
+        }
+  }
   ngAfterViewInit(): void {
     if(!this.disabled){
       const hour = document.getElementById('hour');
@@ -186,6 +201,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit{
       if(minute){minute.style.cursor = "pointer"}
       const second = document.getElementById('second');
       if(second){second.style.cursor = "pointer"}
+      
       document.addEventListener('keydown',(e)=>{
         if(e.code == 'Tab'){
           switch(this.selected){

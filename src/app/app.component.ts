@@ -7,9 +7,13 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public valor = 'funcionario'
+  public valor: string | null= null
   public maximo:string = '00:00:00'
+
   teste(){
     console.log(this.valor)
+  }
+  mudar(){
+    this.valor = "20:20:20"
   }
 }
