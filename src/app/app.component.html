@@ -1,10 +1,11 @@
 <div class="page">
-  <ngx-timepicker type="time" [disabled]="valorDisabled" [min]="valorMin" [max]="valorMax" [(responseString)]="valor"></ngx-timepicker>
+  <ngx-timepicker type="time" [disabled]="valorDisabled" [min]="valorMin" [max]="valorMax" [needSeconds]="valorSeconds" [(responseString)]="valor"></ngx-timepicker>
 
   <button (click)="teste()">Resultado</button>
   <button (click)="mudarvalue()">mudar valor</button>
   <button (click)="mudardisabled()">mudar disabled</button>
   <button (click)="mudarMax()">mudar valor max</button>
   <button (click)="mudarMin()">mudar valor min</button>
+  <button (click)="mudarSeconds()">mudar precisa de segundos</button>
   <div><p id="resposta"></p></div>
 </div>

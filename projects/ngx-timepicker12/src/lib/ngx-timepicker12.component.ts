@@ -39,9 +39,15 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   public hourClock:string|null = null;
   public minuteClock:string|null = null;
   public secondClock:string|null = null;
+  public maxHourLength: number = 0;
   private newInput:boolean = true;
   private hourString:string = ''
   constructor(){
+    if(this.maxHour.toString().length <= 1) {
+      this.maxHourLength = 2
+    } else {
+      this.maxHourLength = this.maxHour.toString().length
+    }
   }
 
   ngOnInit(): void {
@@ -107,6 +113,11 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
       if(this.second>this.maxSecond){
         this.second = this.maxSecond
       }
+      if(this.maxHour.toString().length <= 1) {
+        this.maxHourLength = 2
+      } else {
+        this.maxHourLength = this.maxHour.toString().length
+      }
     }
     if(changes['min']){
       const currentValue = changes['min'].currentValue;
@@ -123,6 +134,10 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
       if(this.second<this.minSecond){
         this.second =this.minSecond
       }
+    }
+    if(changes['needSeconds']){
+      const currentValue = changes['needSeconds'].currentValue;
+      this.needSeconds = currentValue;
     }
   }
 

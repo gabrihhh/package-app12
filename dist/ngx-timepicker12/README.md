@@ -5,7 +5,11 @@
 
   -  `[(response)]:` Espera uma variavel do tipo number|null e retorna ela modificada.
   -  `[(responseString)]:`Espera uma variavel do tipo string|null e retorna ela modificada.
+  -  `(responseStringChange):`É emitido toda vez que o valor do responseString mudar.
+  -  `(responseChange):`É emitido toda vez que o valor do response mudar.
+  -  `[needSeconds]:`Espera uma váriavel do tipo boolean que desabilita os segundos caso false.
   -  `[disabled]:`Espera uma variavel do tipo boolean que desabilita o input caso for true.
+  -  `[min]:`recebe o valor de horário minimo para se escolher baseando-se na string "hh:mm:ss"
   -  `[max]:`recebe o valor de horário maximo para se escolher baseando-se na string "hh:mm:ss"
   -  `[type]:`recebe o tipo de valor que vai ser retornado sendo ele:
       -  `'milisecond':`retorna o valor em milisegundos.
@@ -51,11 +55,13 @@ export class AppModule { }
 <br>
 
 ```js
-  <ngx-timepicker type="time" [(response)]="variavel que será modificada"></ngx-timepicker>
+  <ngx-timepicker type="time" [(tipo do dado retornado)]="variavel que armazenará esse dado"></ngx-timepicker>
 ```
 <br>
 <h4>Como funciona?</h4>
-<p align="justify">Instancie uma váriavel para guardar o valor desejado, utilize ela no "response" para receber em o valor numerico ou no "responseString" para receber o valor em string, após isso defina o "type" pelo tipo de dado que você quer receber. Exemplo de component utilizando timepicker para recebimento de horario em string("00:00:00") com botão para receber o valor no console:</p>
+<p align="justify">Instancie uma váriavel para guardar o valor desejado ou utilize uma variavel já existente que você queira guardar o dado de retorno do input, utilize ela no "response" para receber o dado em o valor numérico ou no "responseString" para receber o valor em string, após isso defina o "type" pelo tipo de dado que você quer receber. </p>
+<br>
+<p>Exemplo de component utilizando timepicker para recebimento de horario em string("00:00:00") com botão para receber o valor no console:</p>
 <br>
 
 ```js
@@ -64,13 +70,14 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   template: `
-    <ngx-timepicker [max]="maxValue" type="time" [(responseString)]="value"></ngx-timepicker>
+    <ngx-timepicker [max]="maxValue" [min]="minValue" type="time" [(responseString)]="value"></ngx-timepicker>
     <button (click)="getTime()">Submit</button>
   `,
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public value = '12:00:00'
+  public value = "00:00:00"
+  public minvalue = '12:00:00'
   public maxValue = '22:00:00'
   public getTime() {
     console.log(this.value)
@@ -78,6 +85,9 @@ export class AppComponent {
 }
 
 ```
+
+<p align="justify">Nesse exemplo o input retornará um valor em string de "hh:mm:ss" entre "12:00:00" e "22:00:00" onde o input será instanciado as "00:00:00".</p>
+
 >[!NOTE]
 >
 >"value" o valor mostrado na inicialização e a resposta do input.<br>

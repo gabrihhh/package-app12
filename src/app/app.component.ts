@@ -7,11 +7,11 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public valor: string | null= "20:20:20"
+  public valor: string | null= "00:00:00"
   public valorDisabled:boolean = true
-  public valorMax = "23:59:59"
+  public valorMax = "05:00:00"
   public valorMin = '00:00:00'
-
+  public valorSeconds = false
   teste(){
     console.log(this.valor)
   }
@@ -38,5 +38,8 @@ export class AppComponent {
     }else{
       this.valorMin = "00:00:00"
     }
+  }
+  mudarSeconds(){
+    this.valorSeconds = !this.valorSeconds
   }
 }

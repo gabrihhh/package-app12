@@ -7,6 +7,7 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, 
     height: number;
     font: number;
     max: string;
+    min: string;
     response: number | null;
     responseString: string | null;
     needSeconds: boolean;
@@ -25,11 +26,15 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, 
     maxHour: number;
     maxMinute: number;
     maxSecond: number;
+    minHour: number;
+    minMinute: number;
+    minSecond: number;
     disableClock: boolean;
     hourClock: string | null;
     minuteClock: string | null;
     secondClock: string | null;
     private newInput;
+    private hourString;
     constructor();
     ngOnInit(): void;
     ngOnChanges(changes: any): void;
@@ -39,7 +44,6 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, 
     focus($event: any): void;
     apagar(local: 'hour' | 'minute' | 'second' | null): void;
     digitar(num: number, local: 'hour' | 'minute' | 'second' | null): void;
-    error(): import("rxjs").Observable<never>;
     updateValue(): void;
     maxClock(): void;
     nowClock(): void;
@@ -48,5 +52,5 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, 
     destroyDivs(id: string): void;
     confirmClock(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<NgxTimepicker12Component, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; "disabled": "disabled"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<NgxTimepicker12Component, "ngx-timepicker", never, { "width": "width"; "height": "height"; "font": "font"; "max": "max"; "min": "min"; "response": "response"; "responseString": "responseString"; "needSeconds": "needSeconds"; "type": "type"; "cor": "cor"; "disabled": "disabled"; }, { "responseChange": "responseChange"; "responseStringChange": "responseStringChange"; }, never, never>;
 }
