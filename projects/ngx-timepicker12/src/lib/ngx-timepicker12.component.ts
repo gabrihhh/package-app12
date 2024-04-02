@@ -12,6 +12,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   @Input() height:number = 40;
   @Input() font:number = 10;
   @Input() max:string = '23:59:59';
+  @Input() min:string = '00:00:00';
   @Input() response: number|null = null;
   @Input() responseString: string | null = null;
   @Input() needSeconds: boolean = true;
@@ -31,15 +32,25 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   public maxHour:number = 0
   public maxMinute:number = 0
   public maxSecond:number = 0
+  public minHour:number = 0
+  public minMinute:number = 0
+  public minSecond:number = 0
   public disableClock:boolean = true;
   public hourClock:string|null = null;
   public minuteClock:string|null = null;
   public secondClock:string|null = null;
   private newInput:boolean = true;
+  private hourString:string = ''
   constructor(){
   }
 
   ngOnInit(): void {
+    if(this.min != ''){
+      const arrayMin = this.min.split(':');
+      this.minHour=parseInt(arrayMin[0])
+      this.minMinute=parseInt(arrayMin[1])
+      this.minSecond=parseInt(arrayMin[2])
+    }
     if(this.max != ''){
       const arrayMax = this.max.split(':');
       this.maxHour=parseInt(arrayMax[0])
@@ -81,6 +92,38 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
       const currentValue = changes['disabled'].currentValue;
       this.disabled = currentValue
     }
+    if(changes['max']){
+      const currentValue = changes['max'].currentValue;
+      const arrayMax = currentValue.split(':');
+      this.maxHour=parseInt(arrayMax[0])
+      this.maxMinute=parseInt(arrayMax[1])
+      this.maxSecond=parseInt(arrayMax[2])
+      if(this.hour>this.maxHour){
+        this.hour = this.maxHour
+      }
+      if(this.minute>this.maxMinute){
+        this.minute = this.maxMinute
+      }
+      if(this.second>this.maxSecond){
+        this.second = this.maxSecond
+      }
+    }
+    if(changes['min']){
+      const currentValue = changes['min'].currentValue;
+      const arrayMin = currentValue.split(':');
+      this.minHour=parseInt(arrayMin[0])
+      this.minMinute=parseInt(arrayMin[1])
+      this.minSecond=parseInt(arrayMin[2])
+      if(this.hour<this.minHour){
+        this.hour =this.minHour
+      }
+      if(this.minute<this.minMinute){
+        this.minute =this.minMinute
+      }
+      if(this.second<this.minSecond){
+        this.second =this.minSecond
+      }
+    }
   }
 
   public init(responseString:String){
@@ -119,7 +162,11 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
           e.preventDefault();
           switch(this.selected){
             case 'hour':
-              this.hour++
+              if(this.hour==this.maxHour){
+                this.hour = this.minHour
+              }else{
+                this.hour++
+              }
               break
             case 'minute':
               this.minute++
@@ -133,7 +180,7 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
           e.preventDefault();
           switch(this.selected){
             case 'hour':
-              if(this.hour==0){
+              if(this.hour==this.minHour){
                 this.hour=this.maxHour
               }else{
                 this.hour--
@@ -225,18 +272,6 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
             break
         }
 
-        if(this.minute>59 || this.minute<0){
-          this.minute = 0
-        }
-        if(this.second>59 || this.second<0){
-          this.second = 0
-        }
-        if(this.hour<0){
-          this.hour = 0
-        }
-        if(this.hour>this.maxHour){
-          this.hour = this.maxHour
-        }
         this.updateValue()
       })
   }
@@ -296,12 +331,15 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   public digitar(num:number,local:'hour'|'minute'|'second'|null){
     if(local){
       if(local=='hour'){
+        
         if(this.newInput){
           this.hour=parseInt('0'+num)
           this.newInput = false;
+          this.hourString = num.toString()
         }else{
           this.hour=parseInt(this.hour.toString()+num)
-          if(this.hour.toString().length == this.maxHour.toString().length){
+          this.hourString += num
+          if(this.hourString.length == this.maxHour.toString().length){
             this.selected = 'minute';
             this.newInput=true
           }
@@ -330,22 +368,31 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
     }
   }
 
-  public error(){
-    return throwError(()=> new Error('The time is bigger then max time:Was set the max time'))
-  }
-
   public updateValue(): void {
+    if(this.minute>59 || this.minute<0){
+      this.minute = 0
+    }
+
+    if(this.second>59 || this.second<0){
+      this.second = 0
+    }
+    if(this.hour<this.minHour){
+      this.hour = this.minHour;
+    }
     if(this.hour>this.maxHour){
       this.hour = this.maxHour;
-      this.error()
     }
     if(this.hour==this.maxHour && this.minute>this.maxMinute){
       this.minute=this.maxMinute
-      this.error()
+    }
+    if(this.hour==this.minHour && this.minute<this.minMinute){
+      this.minute=this.minMinute
     }
     if(this.hour==this.maxHour && this.minute==this.maxMinute && this.second>this.maxSecond){
       this.second=this.maxSecond
-      this.error()
+    }
+    if(this.hour==this.minHour && this.minute==this.minMinute && this.second<this.minSecond){
+      this.second=this.minSecond
     }
     switch(this.type){
       case 'second':

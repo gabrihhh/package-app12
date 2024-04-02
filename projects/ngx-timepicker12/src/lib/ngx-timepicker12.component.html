@@ -10,7 +10,7 @@ class="timepicker"
   (focus)="focus($event)" 
   [style.background-color]="selected==='hour'? cor : 'transparent'" 
   [style.color]="disabled ? 'gray' : 'black'"
-  (click)="focus($event)">{{hour.toString().length===1?'0'+this.hour:this.hour}}
+  (click)="focus($event)">{{hour.toString().length - maxHour.toString().length !== 0 ? ('0'.repeat(maxHour.toString().length - hour.toString().length))+ this.hour : this.hour}}
 </div>
   <div
   [style.color]="disabled ? 'gray' : 'black'"
