@@ -8,10 +8,10 @@ import { FormControl } from '@angular/forms';
 })
 export class AppComponent {
   public valor: string | null= "00:00:00"
-  public valorDisabled:boolean = true
+  public valorDisabled:boolean = false
   public valorMax = "05:00:00"
   public valorMin = '00:00:00'
-  public valorSeconds = false
+  public valorSeconds = true
   teste(){
     console.log(this.valor)
   }

@@ -346,15 +346,14 @@ export class NgxTimepicker12Component implements OnInit,AfterViewInit,OnChanges{
   public digitar(num:number,local:'hour'|'minute'|'second'|null){
     if(local){
       if(local=='hour'){
-        
         if(this.newInput){
-          this.hour=parseInt('0'+num)
+          this.hour=parseInt('0'+num);
           this.newInput = false;
-          this.hourString = num.toString()
+          this.hourString = num.toString();
         }else{
           this.hour=parseInt(this.hour.toString()+num)
           this.hourString += num
-          if(this.hourString.length == this.maxHour.toString().length){
+          if(this.hourString.length == this.maxHourLength){
             this.selected = 'minute';
             this.newInput=true
           }

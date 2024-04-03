@@ -33,6 +33,7 @@ export declare class NgxTimepicker12Component implements OnInit, AfterViewInit, 
     hourClock: string | null;
     minuteClock: string | null;
     secondClock: string | null;
+    maxHourLength: number;
     private newInput;
     private hourString;
     constructor();
